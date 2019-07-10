@@ -1,2 +1,2 @@
-obj-y += kvm-all.o
+obj-y += kvm-all.o vmi/vmi.o
 obj-$(call lnot,$(CONFIG_SEV)) += sev-stub.o

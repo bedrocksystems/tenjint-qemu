@@ -44,6 +44,8 @@
 
 #include "hw/boards.h"
 
+#include "vmi/vmi.h"
+
 /* This check must be after config-host.h is included */
 #ifdef CONFIG_EVENTFD
 #include <sys/eventfd.h>
@@ -2074,6 +2076,8 @@ static int kvm_init(MachineState *ms)
         qemu_balloon_inhibit(true);
     }
 
+    vmi_init(ms);
+
     return 0;
 
 err:
@@ -2087,6 +2091,14 @@ err:
     g_free(s->memory_listener.slots);
 
     return ret;
+}
+
+static void kvm_setup_post(MachineState *ms, AccelState *accel){
+    vmi_setup_post(ms, accel);
+}
+
+static void kvm_uninit(MachineState *ms, AccelState *accel){
+    vmi_uninit(ms, accel);
 }
 
 void kvm_set_sigmask_len(KVMState *s, unsigned int sigmask_len)
@@ -2946,6 +2958,8 @@ static void kvm_accel_class_init(ObjectClass *oc, void *data)
     ac->name = "KVM";
     ac->init_machine = kvm_init;
     ac->has_memory = kvm_accel_has_memory;
+    ac->setup_post = kvm_setup_post;
+    ac->uninit_machine = kvm_uninit;
     ac->allowed = &kvm_allowed;
 }
 

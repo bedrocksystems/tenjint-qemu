@@ -298,6 +298,7 @@ struct MachineState {
     DeviceMemoryState *device_memory;
 
     bool vmi;
+    bool vmi_initialized;
     char *vmi_configs;
 
     ram_addr_t ram_size;

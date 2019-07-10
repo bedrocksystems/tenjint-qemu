@@ -4461,7 +4461,7 @@ int main(int argc, char **argv, char **envp)
             error_reportf_err(local_err, "-incoming %s: ", incoming);
             exit(1);
         }
-    } else if (autostart) {
+    } else if (!current_machine->vmi_initialized && autostart) {
         vm_start();
     }
 
@@ -4469,6 +4469,8 @@ int main(int argc, char **argv, char **envp)
     os_setup_post();
 
     main_loop();
+
+    uninit_accel(current_machine);
 
     gdbserver_cleanup();
 
