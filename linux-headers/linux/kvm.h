@@ -13,6 +13,8 @@
 #include <linux/ioctl.h>
 #include <asm/kvm.h>
 
+#include <linux/kvm_vmi.h>
+
 #define KVM_API_VERSION 12
 
 /* *** Deprecated interfaces *** */
@@ -395,6 +397,8 @@ struct kvm_run {
 		/* Fix the size of the union. */
 		char padding[256];
 	};
+
+	union kvm_vmi_event vmi_event;
 
 	/* 2048 is the size of the char array used to bound/pad the size
 	 * of the union that holds sync regs.
