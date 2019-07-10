@@ -238,6 +238,14 @@ static QemuOptsList machine_opts = {
             .help = "Up to 8 chars in set of [A-Za-z0-9. ](lower case chars"
                     " converted to upper case) to pass to machine"
                     " loader, boot manager, and guest kernel",
+        },{
+            .name = "vmi",
+            .type = QEMU_OPT_BOOL,
+            .help = "enable/disable virtual machine introspection",
+        },{
+            .name = "vmi-configs",
+            .type = QEMU_OPT_STRING,
+            .help = "list of vmi configuration files",
         },
         { /* End of list */ }
     }
