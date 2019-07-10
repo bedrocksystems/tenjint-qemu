@@ -144,6 +144,15 @@ void accel_setup_post(MachineState *ms)
     }
 }
 
+void uninit_accel(MachineState *ms)
+{
+    AccelState *accel = ms->accelerator;
+    AccelClass *acc = ACCEL_GET_CLASS(accel);
+    if (acc->uninit_machine) {
+        acc->uninit_machine(ms, accel);
+    }
+}
+
 static void register_accel_types(void)
 {
     type_register_static(&accel_type);

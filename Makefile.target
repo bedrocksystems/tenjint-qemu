@@ -18,6 +18,8 @@ QEMU_CFLAGS += -iquote .. -iquote $(SRC_PATH)/target/$(TARGET_BASE_ARCH) -DNEED_
 
 QEMU_CFLAGS+=-iquote $(SRC_PATH)/include
 
+QEMU_CFLAGS+=`pkg-config --cflags python3`
+
 ifdef CONFIG_USER_ONLY
 # user emulator name
 QEMU_PROG=qemu-$(TARGET_NAME)
@@ -201,7 +203,7 @@ COMMON_LDADDS = ../libqemuutil.a
 
 # build either PROG or PROGW
 $(QEMU_PROG_BUILD): $(all-obj-y) $(COMMON_LDADDS)
-	$(call LINK, $(filter-out %.mak, $^))
+	$(call LINK, $(filter-out %.mak, $^)) `pkg-config --libs python3`
 ifdef CONFIG_DARWIN
 	$(call quiet-command,Rez -append $(SRC_PATH)/pc-bios/qemu.rsrc -o $@,"REZ","$(TARGET_DIR)$@")
 	$(call quiet-command,SetFile -a C $@,"SETFILE","$(TARGET_DIR)$@")
