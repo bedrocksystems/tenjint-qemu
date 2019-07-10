@@ -43,7 +43,9 @@ DEF("machine", HAS_ARG, QEMU_OPTION_machine, \
     "                suppress-vmdesc=on|off disables self-describing migration (default=off)\n"
     "                nvdimm=on|off controls NVDIMM support (default=off)\n"
     "                enforce-config-section=on|off enforce configuration section migration (default=off)\n"
-    "                memory-encryption=@var{} memory encryption object to use (default=none)\n",
+    "                memory-encryption=@var{} memory encryption object to use (default=none)\n"
+    "                vmi=on|off enable virtual machine introspection (default=off)\n"
+    "                vmi-configs=config1[:config2[:...]] specify vmi configs (evaluated in order)\n",
     QEMU_ARCH_ALL)
 STEXI
 @item -machine [type=]@var{name}[,prop=@var{value}[,...]]
@@ -103,6 +105,10 @@ NOTE: this parameter is deprecated. Please use @option{-global}
 @option{migration.send-configuration}=@var{on|off} instead.
 @item memory-encryption=@var{}
 Memory encryption object to use. The default is none.
+@item vmi=on|off
+Enables virtual machine introspection. The default is off.
+@item vmi-configs=@var{config1}[:@var{config2}[:...]]
+Specifies the location of VMI configuration files. They are evaluated in order.
 @end table
 ETEXI
 

@@ -297,6 +297,9 @@ struct MachineState {
     char *memory_encryption;
     DeviceMemoryState *device_memory;
 
+    bool vmi;
+    char *vmi_configs;
+
     ram_addr_t ram_size;
     ram_addr_t maxram_size;
     uint64_t   ram_slots;

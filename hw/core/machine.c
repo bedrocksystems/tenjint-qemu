@@ -488,6 +488,36 @@ static bool machine_get_enforce_config_section(Object *obj, Error **errp)
     return ms->enforce_config_section;
 }
 
+static void machine_set_vmi(Object *obj, bool value, Error **errp)
+{
+    MachineState *ms = MACHINE(obj);
+
+    ms->vmi = value;
+}
+
+static bool machine_get_vmi(Object *obj, Error **errp)
+{
+    MachineState *ms = MACHINE(obj);
+
+    return ms->vmi;
+}
+
+static char *machine_get_vmi_configs(Object *obj, Error **errp)
+{
+    MachineState *ms = MACHINE(obj);
+
+    return g_strdup(ms->vmi_configs);
+}
+
+static void machine_set_vmi_configs(Object *obj, const char *value,
+                                    Error **errp)
+{
+    MachineState *ms = MACHINE(obj);
+
+    g_free(ms->vmi_configs);
+    ms->vmi_configs = g_strdup(value);
+}
+
 static char *machine_get_memory_encryption(Object *obj, Error **errp)
 {
     MachineState *ms = MACHINE(obj);
@@ -911,6 +941,18 @@ static void machine_class_init(ObjectClass *oc, void *data)
         &error_abort);
     object_class_property_set_description(oc, "memory-encryption",
         "Set memory encryption object to use", &error_abort);
+
+    object_class_property_add_bool(oc, "vmi",
+        machine_get_vmi, machine_set_vmi,
+        &error_abort);
+    object_class_property_set_description(oc, "vmi",
+        "Enable virtual machine introspection", &error_abort);
+
+    object_class_property_add_str(oc, "vmi-configs",
+        machine_get_vmi_configs, machine_set_vmi_configs,
+        &error_abort);
+    object_class_property_set_description(oc, "vmi-configs",
+        "Specify the location of the VMI configuration files", &error_abort);
 }
 
 static void machine_class_base_init(ObjectClass *oc, void *data)
