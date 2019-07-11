@@ -10,11 +10,24 @@
 
 #include "vmi.h"
 
+#define PY_STRING_SZ 2048
+
 static QemuThread *python_thread = NULL;
 
 static void* vmi_python_thread_func(void *arg){
+    char *vmi_configs = (char*) arg;
+    char py_string[PY_STRING_SZ] = {0};
+
+    if (vmi_configs) {
+        snprintf(py_string, PY_STRING_SZ,
+                 "import tenjint\ntenjint.tenjint.run(\"%s\")\n", vmi_configs);
+    }
+    else {
+        strncpy(py_string, "import tenjint\ntenjint.tenjint.run()\n",
+                PY_STRING_SZ-1);
+    }
     Py_Initialize();
-    PyRun_SimpleString("print(\"Hello World\")");
+    PyRun_SimpleString(py_string);
     Py_Finalize();
     return NULL;
 }
@@ -33,7 +46,7 @@ int vmi_init(MachineState *ms) {
 
     python_thread = g_malloc0(sizeof(QemuThread));
     qemu_thread_create(python_thread, "python", vmi_python_thread_func,
-                       NULL, 0);
+                       ms->vmi_configs, 0);
 
     ms->vmi_initialized = true;
 
