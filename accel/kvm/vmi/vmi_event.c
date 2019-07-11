@@ -5,6 +5,7 @@
 #include "qemu/main-loop.h"
 #include "sysemu/cpus.h"
 #include "sysemu/vmi_event.h"
+#include "sysemu/sysemu.h"
 
 #include "vmi.h"
 
@@ -62,6 +63,8 @@ void vmi_put_event(union kvm_vmi_event *event, bool needs_free){
     QSIMPLEQ_INSERT_TAIL(vmi_event_queue, e, entry);
 
     pause_all_vcpus_signal();
+
+    qemu_cond_broadcast(&vmi_event_cv);
 }
 
 union kvm_vmi_event* vmi_get_event(void){
@@ -93,6 +96,12 @@ void vmi_wait_event(void){
     QSIMPLEQ_INIT(vmi_free_queue);
 
     while(QSIMPLEQ_EMPTY_ATOMIC(vmi_event_queue)) {
+        if (!runstate_is_running()){
+            vm_start();
+        }
+        else{
+            resume_all_vcpus();
+        }
         qemu_mutex_wait_iothread(&vmi_event_cv);
     }
 
