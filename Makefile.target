@@ -203,7 +203,7 @@ COMMON_LDADDS = ../libqemuutil.a
 
 # build either PROG or PROGW
 $(QEMU_PROG_BUILD): $(all-obj-y) $(COMMON_LDADDS)
-	$(call LINK, $(filter-out %.mak, $^)) `pkg-config --libs python3`
+	$(call LINK, $(filter-out %.mak, $^)) `python3-config --ldflags`
 ifdef CONFIG_DARWIN
 	$(call quiet-command,Rez -append $(SRC_PATH)/pc-bios/qemu.rsrc -o $@,"REZ","$(TARGET_DIR)$@")
 	$(call quiet-command,SetFile -a C $@,"SETFILE","$(TARGET_DIR)$@")

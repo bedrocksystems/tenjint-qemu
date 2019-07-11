@@ -18,6 +18,8 @@ static void* vmi_python_thread_func(void *arg){
     char *vmi_configs = (char*) arg;
     char py_string[PY_STRING_SZ] = {0};
 
+    printf("Python thread: 0x%lx\n", pthread_self());
+
     if (vmi_configs) {
         snprintf(py_string, PY_STRING_SZ,
                  "import tenjint\ntenjint.tenjint.run(\"%s\")\n", vmi_configs);
