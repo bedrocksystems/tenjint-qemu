@@ -38,7 +38,7 @@
 #define KVM_VMI_EVENT_TASK_SWITCH         0
 #define KVM_VMI_EVENT_DEBUG               1
 #define KVM_VMI_EVENT_MTF                 2
-#define KVM_VMI_EVENT_START               3
+#define KVM_VMI_EVENT_STOP                3
 #define KVM_VMI_EVENT_VM_READY            4
 #define KVM_VMI_EVENT_VM_EXIT             5
 
