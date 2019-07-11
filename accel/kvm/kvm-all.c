@@ -2076,7 +2076,10 @@ static int kvm_init(MachineState *ms)
         qemu_balloon_inhibit(true);
     }
 
-    vmi_init(ms);
+    ret = vmi_init(ms);
+    if (ret < 0){
+        goto err;
+    }
 
     return 0;
 

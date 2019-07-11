@@ -1907,6 +1907,11 @@ void qemu_mutex_unlock_iothread(void)
     qemu_mutex_unlock(&qemu_global_mutex);
 }
 
+void qemu_mutex_wait_iothread(QemuCond *cond)
+{
+    qemu_cond_wait(cond, &qemu_global_mutex);
+}
+
 static bool all_vcpus_paused(void)
 {
     CPUState *cpu;
@@ -1920,7 +1925,7 @@ static bool all_vcpus_paused(void)
     return true;
 }
 
-void pause_all_vcpus(void)
+void pause_all_vcpus_signal(void)
 {
     CPUState *cpu;
 
@@ -1933,6 +1938,11 @@ void pause_all_vcpus(void)
             qemu_cpu_kick(cpu);
         }
     }
+}
+
+void pause_all_vcpus_wait(void)
+{
+    CPUState *cpu;
 
     /* We need to drop the replay_lock so any vCPU threads woken up
      * can finish their replay tasks
@@ -1949,6 +1959,12 @@ void pause_all_vcpus(void)
     qemu_mutex_unlock_iothread();
     replay_mutex_lock();
     qemu_mutex_lock_iothread();
+}
+
+void pause_all_vcpus(void)
+{
+    pause_all_vcpus_signal();
+    pause_all_vcpus_wait();
 }
 
 void cpu_resume(CPUState *cpu)
