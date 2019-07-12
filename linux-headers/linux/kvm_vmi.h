@@ -23,86 +23,13 @@
 #ifndef __LINUX_KVM_VMI_H
 #define __LINUX_KVM_VMI_H
 
-#include <linux/types.h>
-#include <linux/perf_event.h>
-
 #include <linux/ioctl.h>
-
-#define MAX_LBR_ENTRIES                   32
-
-#define KVM_VMI_FEATURE_TRAP_TASK_SWITCH  0
-#define KVM_VMI_FEATURE_LBR               1
-#define KVM_VMI_FEATURE_MTF               2
-#define KVM_VMI_FEATURE_MAX               3
-
-#define KVM_VMI_EVENT_TASK_SWITCH         0
-#define KVM_VMI_EVENT_DEBUG               1
-#define KVM_VMI_EVENT_MTF                 2
-#define KVM_VMI_EVENT_STOP                3
-#define KVM_VMI_EVENT_VM_READY            4
-#define KVM_VMI_EVENT_VM_EXIT             5
-
-struct kvm_vmi_feature_task_switch {
-    __u32 feature;
-    __u8 enable;
-    __u64 dtb;
-    __u8 in;
-    __u8 out;
-};
-
-struct kvm_vmi_feature_lbr {
-    __u32 feature;
-    __u8 enable;
-    __u64 lbr_select;
-};
-
-struct kvm_vmi_feature_mtf {
-	__u32 feature;
-	__u8  enable;
-};
-
-union kvm_vmi_feature {
-    __u32 feature;
-    struct kvm_vmi_feature_task_switch ts;
-    struct kvm_vmi_feature_lbr lbr;
-	struct kvm_vmi_feature_mtf mtf;
-};
-
-struct kvm_vmi_event_task_switch {
-    __u32 type;
-    __u64 old_cr3;
-    __u64 new_cr3;
-};
-
-struct kvm_vmi_event_debug {
-    __u32 type;
-    __u8 single_step;
-    __u8 watchpoint;
-    __u64 watchpoint_gva;
-    __s32 watchpoint_flags;
-    __s32 exception;
-};
-
-union kvm_vmi_event {
-    __u32 type;
-    struct kvm_vmi_event_task_switch ts;
-    struct kvm_vmi_event_debug debug;
-};
-
-struct kvm_vmi_lbr_info {
-    __u32 entries;
-    __u8 tos;
-    __u64 from[MAX_LBR_ENTRIES];
-    __u64 to[MAX_LBR_ENTRIES];
-};
+#include <asm/kvm_vmi.h>
 
 #define KVM_VMI_FEATURE_UPDATE    _IOW(KVMIO, 0xf0, union kvm_vmi_feature)
 #define KVM_VMI_GET_LBR           _IOW(KVMIO, 0xf1, struct kvm_vmi_lbr_info)
 
 #define KVM_EXIT_VMI_EVENT        1337
-
-
-
 #endif /* __LINUX_KVM_VMI_H */
 
 

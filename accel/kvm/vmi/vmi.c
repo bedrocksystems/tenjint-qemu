@@ -4,6 +4,7 @@
 
 #include "sysemu/cpus.h"
 #include "sysemu/vmi_event.h"
+#include "sysemu/vmi_api.h"
 #include "qemu/thread.h"
 #include "qemu/main-loop.h"
 #include "hw/boards.h"
@@ -56,29 +57,29 @@ int vmi_init(MachineState *ms) {
 }
 
 void vmi_setup_post(MachineState *ms, AccelState *accel){
-    union kvm_vmi_event *event = NULL;
+    struct vmi_event *event = NULL;
 
     if(!ms->vmi){
         return;
     }
     printf("VMI setup post\n");
 
-    event = g_malloc0(sizeof(union kvm_vmi_event));
-    event->type = KVM_VMI_EVENT_VM_READY;
-    vmi_put_event(event, true);
+    event = g_malloc0(sizeof(struct vmi_event));
+    event->type = VMI_EVENT_VM_READY;
+    vmi_put_event(event);
 }
 
 void vmi_uninit(MachineState *ms, AccelState *accel){
-    union kvm_vmi_event *event = NULL;
+    struct vmi_event *event = NULL;
 
     if(!ms->vmi){
         return;
     }
     printf("VMI uninit\n");
 
-    event = g_malloc0(sizeof(union kvm_vmi_event));
-    event->type = KVM_VMI_EVENT_VM_EXIT;
-    vmi_put_event(event, true);
+    event = g_malloc0(sizeof(struct vmi_event));
+    event->type = VMI_EVENT_VM_SHUTDOWN;
+    vmi_put_event(event);
 
     qemu_mutex_unlock_iothread();
     qemu_thread_join(python_thread);

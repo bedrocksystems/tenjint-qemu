@@ -3,6 +3,7 @@
 
 #include "qemu/typedefs.h"
 #include "sysemu/accel.h"
+#include "sysemu/vmi_api.h"
 
 // vmi.c
 int vmi_init(MachineState *ms);
@@ -12,6 +13,6 @@ void vmi_uninit(MachineState *ms, AccelState *accel);
 // vmi_event.c
 int vmi_event_init(MachineState *ms);
 void vmi_event_uninit(MachineState *ms, AccelState *accel);
-union kvm_vmi_event* vmi_get_event(void);
+struct vmi_event* vmi_get_event(void);
 void vmi_wait_event(void);
 #endif

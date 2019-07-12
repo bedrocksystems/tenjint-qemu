@@ -1,9 +1,11 @@
 #ifndef VMI_EVENT_H
 #define VMI_EVENT_H
-#include "qemu/osdep.h"
 
-#include <linux/kvm_vmi.h>
+#include "sysemu/vmi_api.h"
 
-void vmi_put_event(union kvm_vmi_event *event, bool needs_free);
+#include <asm/kvm_vmi.h>
+
+void vmi_put_kvm_event(union kvm_vmi_event *event);
+void vmi_put_event(struct vmi_event *event);
 
 #endif
