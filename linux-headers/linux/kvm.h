@@ -13,7 +13,7 @@
 #include <linux/ioctl.h>
 #include <asm/kvm.h>
 
-#include <linux/kvm_vmi.h>
+#include <asm/kvm_vmi.h>
 
 #define KVM_API_VERSION 12
 

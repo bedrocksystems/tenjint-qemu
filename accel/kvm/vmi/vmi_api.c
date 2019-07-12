@@ -17,7 +17,7 @@ void vmi_api_uninit(void) {
     return;
 }
 
-union kvm_vmi_event* vmi_api_get_event(void) {
+struct vmi_event* vmi_api_get_event(void) {
     return vmi_get_event();
 }
 
