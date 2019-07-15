@@ -57,7 +57,7 @@ void vmi_put_event(struct vmi_event *event){
     struct vmi_event_entry *e = NULL;
 
 #if defined(TARGET_X86_64)
-    event->arch = VMI_ARCH_X86;
+    event->arch = VMI_ARCH_X86_64;
 #elif defined(TARGET_AARCH64)
     event->arch = VMI_ARCH_AARCH64;
 #elif defined(TARGET_I386) || defined(TARGET_ARM)
