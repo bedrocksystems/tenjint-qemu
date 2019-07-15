@@ -3,7 +3,7 @@
 #include <asm/kvm_vmi.h>
 
 #define VMI_ARCH_UNSUPPORTED    -1
-#define VMI_ARCH_X86            0
+#define VMI_ARCH_X86_64         0
 #define VMI_ARCH_AARCH64        1
 
 #define VMI_EVENT_KVM           0
