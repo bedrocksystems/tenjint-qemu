@@ -17,6 +17,7 @@
 #include <sys/ioctl.h>
 
 #include <linux/kvm.h>
+#include <linux/kvm_vmi.h>
 
 #include "qemu/atomic.h"
 #include "qemu/option.h"
@@ -45,6 +46,7 @@
 #include "hw/boards.h"
 
 #include "vmi/vmi.h"
+#include "sysemu/vmi_event.h"
 
 /* This check must be after config-host.h is included */
 #ifdef CONFIG_EVENTFD
@@ -2418,6 +2420,11 @@ int kvm_cpu_exec(CPUState *cpu)
                 ret = kvm_arch_handle_exit(cpu, run);
                 break;
             }
+            break;
+        case KVM_EXIT_VMI_EVENT:
+            DPRINTF("vmi_put_kvm_event\n");
+            vmi_put_kvm_event(&(run->vmi_event));
+            ret = EXCP_HALTED;
             break;
         default:
             DPRINTF("kvm_arch_handle_exit\n");
