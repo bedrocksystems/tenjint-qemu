@@ -15,4 +15,5 @@ int vmi_event_init(MachineState *ms);
 void vmi_event_uninit(MachineState *ms, AccelState *accel);
 struct vmi_event* vmi_get_event(void);
 void vmi_wait_event(void);
+void vmi_wait_init(void);
 #endif
