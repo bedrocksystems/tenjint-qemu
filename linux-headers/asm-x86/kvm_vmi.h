@@ -41,8 +41,8 @@ struct kvm_vmi_feature_task_switch {
     __u32 feature;
     __u8 enable;
     __u64 dtb;
-    __u8 in;
-    __u8 out;
+    __u8 incoming;
+    __u8 outgoing;
 };
 
 struct kvm_vmi_feature_lbr {

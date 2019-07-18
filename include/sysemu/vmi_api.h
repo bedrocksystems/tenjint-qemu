@@ -25,4 +25,8 @@ extern void vmi_api_uninit(void);
 extern struct vmi_event* vmi_api_get_event(void);
 extern void vmi_api_wait_event(void);
 
+extern int vmi_api_feature_update_all(union kvm_vmi_feature *feature);
+extern int vmi_api_feature_update_single(uint32_t cpu_num,
+                                         union kvm_vmi_feature *feature);
+
 #endif

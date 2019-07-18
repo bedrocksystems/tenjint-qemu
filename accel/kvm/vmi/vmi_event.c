@@ -109,6 +109,10 @@ void vmi_wait_event(void){
     }
     QSIMPLEQ_INIT(vmi_free_queue);
 
+    if (!QSIMPLEQ_EMPTY(vmi_event_queue)) {
+        return;
+    }
+
     if (!runstate_is_running()){
         vm_start();
     }
@@ -123,4 +127,9 @@ void vmi_wait_event(void){
     pause_all_vcpus();
 }
 
+void vmi_wait_init(void){
+    while(QSIMPLEQ_EMPTY(vmi_event_queue)) {
+        qemu_mutex_wait_iothread(&vmi_event_cv);
+    }
+}
 
