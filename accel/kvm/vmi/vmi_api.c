@@ -7,6 +7,7 @@
 #include "sysemu/kvm.h"
 #include "sysemu/vmi_api.h"
 #include "qemu/main-loop.h"
+#include "exec/cpu-common.h"
 
 #include "vmi.h"
 
@@ -54,4 +55,26 @@ int vmi_api_feature_update_single(uint32_t cpu_num, union kvm_vmi_feature *featu
     rv = kvm_vcpu_ioctl(cpu, KVM_VMI_FEATURE_UPDATE, feature);
 
     return rv;
+}
+
+uint64_t vmi_api_get_ram_size(void) {
+    return (uint64_t) ram_size;
+}
+
+int vmi_api_read_phys_mem(uint64_t addr, void *buf, uint64_t len) {
+    if (addr + len > ram_size){
+        return -1;
+    }
+
+    cpu_physical_memory_read(addr, buf, len);
+    return 0;
+}
+
+int vmi_api_write_phys_mem(uint64_t addr, const void *buf, uint64_t len) {
+    if (addr + len > ram_size){
+        return -1;
+    }
+
+    cpu_physical_memory_write(addr, buf, len);
+    return 0;
 }
