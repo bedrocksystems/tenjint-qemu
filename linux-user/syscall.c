@@ -36,6 +36,7 @@
 #include <sys/resource.h>
 #include <sys/swap.h>
 #include <linux/capability.h>
+#include <linux/sockios.h>
 #include <sched.h>
 #include <sys/timex.h>
 #include <sys/socket.h>
