@@ -29,6 +29,8 @@ extern int vmi_api_feature_update_all(union kvm_vmi_feature *feature);
 extern int vmi_api_feature_update_single(uint32_t cpu_num,
                                          union kvm_vmi_feature *feature);
 
+uint64_t vmi_api_get_num_cpus(void);
+
 extern uint64_t vmi_api_get_ram_size(void);
 extern int vmi_api_read_phys_mem(uint64_t addr, void *buf, uint64_t len);
 extern int vmi_api_write_phys_mem(uint64_t addr, const void *buf, uint64_t len);
