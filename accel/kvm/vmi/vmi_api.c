@@ -57,6 +57,16 @@ int vmi_api_feature_update_single(uint32_t cpu_num, union kvm_vmi_feature *featu
     return rv;
 }
 
+uint64_t vmi_api_get_num_cpus(void) {
+    CPUState *cpu;
+    uint64_t rv = 0;
+
+    CPU_FOREACH(cpu) {
+        rv++;
+    }
+    return rv;
+}
+
 uint64_t vmi_api_get_ram_size(void) {
     return (uint64_t) ram_size;
 }
