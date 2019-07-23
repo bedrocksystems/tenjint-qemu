@@ -28,7 +28,6 @@
 #include <asm/kvm_vmi.h>
 
 #define KVM_VMI_FEATURE_UPDATE    _IOW(KVMIO, 0xf0, union kvm_vmi_feature)
-#define KVM_VMI_GET_LBR           _IOW(KVMIO, 0xf1, struct kvm_vmi_lbr_info)
 
 #define KVM_EXIT_VMI_EVENT        1337
 #endif /* __LINUX_KVM_VMI_H */

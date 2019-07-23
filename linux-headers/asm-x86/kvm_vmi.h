@@ -98,6 +98,9 @@ struct kvm_vmi_lbr_info {
     __u64 from[MAX_LBR_ENTRIES];
     __u64 to[MAX_LBR_ENTRIES];
 };
+
+#define KVM_VMI_GET_LBR           _IOW(KVMIO, 0xf8, struct kvm_vmi_lbr_info)
+
 #endif /* _ASM_X86_KVM_VMI_H */
 
 
