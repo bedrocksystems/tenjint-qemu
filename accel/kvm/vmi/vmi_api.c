@@ -20,7 +20,10 @@ int vmi_api_init(void) {
 
 void vmi_api_uninit(void) {
     qemu_mutex_unlock_iothread();
-    return;
+}
+
+void vmi_api_request_stop(void) {
+    vmi_request_stop();
 }
 
 struct vmi_event* vmi_api_get_event(void) {
