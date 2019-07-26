@@ -53,6 +53,17 @@ void vmi_event_uninit(MachineState *ms, AccelState *accel){
     vmi_free_queue = NULL;
 }
 
+void vmi_request_stop(void) {
+    struct vmi_event *event = NULL;
+    if (qemu_mutex_iothread_locked())
+        return;
+    qemu_mutex_lock_iothread();
+    event = g_malloc0(sizeof(struct vmi_event));
+    event->type = VMI_EVENT_STOP;
+    vmi_put_event(event);
+    qemu_mutex_unlock_iothread();
+}
+
 void vmi_put_event(struct vmi_event *event){
     struct vmi_event_entry *e = NULL;
 
@@ -127,6 +138,7 @@ void vmi_wait_event(void){
     }
 
     pause_all_vcpus();
+    cpu_disable_ticks();
 }
 
 void vmi_wait_init(void){
