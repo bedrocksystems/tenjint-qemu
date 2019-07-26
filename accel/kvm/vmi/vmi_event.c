@@ -55,13 +55,19 @@ void vmi_event_uninit(MachineState *ms, AccelState *accel){
 
 void vmi_request_stop(void) {
     struct vmi_event *event = NULL;
-    if (qemu_mutex_iothread_locked())
-        return;
-    qemu_mutex_lock_iothread();
+    bool need_lock = false;
+
     event = g_malloc0(sizeof(struct vmi_event));
     event->type = VMI_EVENT_STOP;
+
+    if (!qemu_mutex_iothread_locked()) {
+        qemu_mutex_lock_iothread();
+        need_lock = true;
+    }
     vmi_put_event(event);
-    qemu_mutex_unlock_iothread();
+    if (need_lock) {
+        qemu_mutex_unlock_iothread();
+    }
 }
 
 void vmi_put_event(struct vmi_event *event){
