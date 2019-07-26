@@ -19,8 +19,6 @@ static void* vmi_python_thread_func(void *arg){
     char *vmi_configs = (char*) arg;
     char py_string[PY_STRING_SZ] = {0};
 
-    printf("Python thread: 0x%lx\n", pthread_self());
-
     if (vmi_configs) {
         snprintf(py_string, PY_STRING_SZ,
                  "import tenjint\ntenjint.tenjint.run(\"%s\")\n", vmi_configs);
@@ -41,7 +39,6 @@ int vmi_init(MachineState *ms) {
     if(!ms->vmi){
         return rv;
     }
-    printf("VMI init\n");
 
     rv = vmi_event_init(ms);
     if (rv < 0)
@@ -62,7 +59,6 @@ void vmi_setup_post(MachineState *ms, AccelState *accel){
     if(!ms->vmi){
         return;
     }
-    printf("VMI setup post\n");
 
     event = g_malloc0(sizeof(struct vmi_event));
     event->type = VMI_EVENT_VM_READY;
@@ -75,7 +71,6 @@ void vmi_uninit(MachineState *ms, AccelState *accel){
     if(!ms->vmi){
         return;
     }
-    printf("VMI uninit\n");
 
     event = g_malloc0(sizeof(struct vmi_event));
     event->type = VMI_EVENT_VM_SHUTDOWN;
