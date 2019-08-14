@@ -75,19 +75,11 @@ uint64_t vmi_api_get_ram_size(void) {
 }
 
 int vmi_api_read_phys_mem(uint64_t addr, void *buf, uint64_t len) {
-    if (addr + len > ram_size){
-        return -1;
-    }
-
     cpu_physical_memory_read(addr, buf, len);
     return 0;
 }
 
 int vmi_api_write_phys_mem(uint64_t addr, const void *buf, uint64_t len) {
-    if (addr + len > ram_size){
-        return -1;
-    }
-
     cpu_physical_memory_write(addr, buf, len);
     return 0;
 }
