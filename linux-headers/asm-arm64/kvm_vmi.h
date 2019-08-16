@@ -30,12 +30,14 @@
 
 #define KVM_VMI_EVENT_TASK_SWITCH         0
 
+#define KVM_VMI_TTBR0                     0
+#define KVM_VMI_TTBR1                     1
+#define KVM_VMI_TCR                       2
+
 struct kvm_vmi_feature_task_switch {
     __u32 feature;
     __u8 enable;
-    __u64 dtb;
-    __u8 incoming;
-    __u8 outgoing;
+    __u8 reg;
 };
 
 union kvm_vmi_feature {
@@ -46,12 +48,9 @@ union kvm_vmi_feature {
 struct kvm_vmi_event_task_switch {
     __u32 type;
     __u32 cpu_num;
-    __u64 old_ttbr0;
-    __u64 new_ttbr0;
-    __u64 old_ttbr1;
-    __u64 new_ttbr1;
-    __u64 old_tcr;
-    __u64 new_tcr;
+    __u8 reg;
+    __u64 old_val;
+    __u64 new_val;
 };
 
 union kvm_vmi_event {
