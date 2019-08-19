@@ -48,7 +48,8 @@ static inline bool excp_is_internal(int excp)
         || excp == EXCP_HALTED
         || excp == EXCP_EXCEPTION_EXIT
         || excp == EXCP_KERNEL_TRAP
-        || excp == EXCP_SEMIHOST;
+        || excp == EXCP_SEMIHOST
+        || excp == EXCP_VMI;
 }
 
 /* Scale factor for generic timers, ie number of ns per tick.

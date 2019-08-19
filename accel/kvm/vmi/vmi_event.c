@@ -88,8 +88,8 @@ void vmi_put_event(struct vmi_event *event){
 
     QSIMPLEQ_INSERT_TAIL(vmi_event_queue, e, entry);
 
-    pause_all_vcpus_signal();
     cpu_disable_ticks();
+    pause_all_vcpus_signal();
 
     qemu_cond_broadcast(&vmi_event_cv);
 }
@@ -143,8 +143,8 @@ void vmi_wait_event(void){
         qemu_mutex_wait_iothread(&vmi_event_cv);
     }
 
-    pause_all_vcpus();
     cpu_disable_ticks();
+    pause_all_vcpus();
 }
 
 void vmi_wait_init(void){
