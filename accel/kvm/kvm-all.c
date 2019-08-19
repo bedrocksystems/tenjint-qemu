@@ -2422,8 +2422,8 @@ int kvm_cpu_exec(CPUState *cpu)
             }
             break;
         case KVM_EXIT_VMI_EVENT:
-            DPRINTF("vmi_put_kvm_event\n");
-            ret = EXCP_HALTED;
+            DPRINTF("KVM_EXIT_VMI_EVENT\n");
+            ret = EXCP_VMI;
             break;
         default:
             DPRINTF("kvm_arch_handle_exit\n");
@@ -2439,10 +2439,8 @@ int kvm_cpu_exec(CPUState *cpu)
         cpu_dump_state(cpu, stderr, CPU_DUMP_CODE);
         vm_stop(RUN_STATE_INTERNAL_ERROR);
     }
-    else if (run->exit_reason == KVM_EXIT_VMI_EVENT) {
-        vmi_put_kvm_event(&(run->vmi_event));
-    }
 
+    run->exit_reason = 0;
     atomic_set(&cpu->exit_request, 0);
     return ret;
 }

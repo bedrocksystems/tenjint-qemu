@@ -59,6 +59,7 @@
 #include "sysemu/runstate.h"
 #include "hw/boards.h"
 #include "hw/hw.h"
+#include "sysemu/vmi_event.h"
 
 #ifdef CONFIG_LINUX
 
@@ -1318,6 +1319,9 @@ static void *qemu_kvm_cpu_thread_fn(void *arg)
             r = kvm_cpu_exec(cpu);
             if (r == EXCP_DEBUG) {
                 cpu_handle_guest_debug(cpu);
+            }
+            else if (r == EXCP_VMI) {
+                vmi_put_kvm_event(&(cpu->kvm_run->vmi_event));
             }
         }
         qemu_wait_io_event(cpu);
