@@ -1,5 +1,6 @@
 #ifndef VMI_API_H
 #define VMI_API_H
+#include <linux/kvm_vmi.h>
 #include <asm/kvm_vmi.h>
 
 #define VMI_ARCH_UNSUPPORTED    -1
@@ -31,7 +32,11 @@ extern int vmi_api_feature_update_all(union kvm_vmi_feature *feature);
 extern int vmi_api_feature_update_single(uint32_t cpu_num,
                                          union kvm_vmi_feature *feature);
 
-uint64_t vmi_api_get_num_cpus(void);
+extern int vmi_api_slp_update_all(struct kvm_vmi_slp_perm *slp_perm);
+extern int vmi_api_slp_update_single(uint32_t cpu_num,
+                                     struct kvm_vmi_slp_perm *slp_perm);
+
+extern uint64_t vmi_api_get_num_cpus(void);
 
 extern uint64_t vmi_api_get_ram_size(void);
 extern int vmi_api_read_phys_mem(uint64_t addr, void *buf, uint64_t len);
