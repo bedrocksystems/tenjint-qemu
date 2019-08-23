@@ -48,7 +48,8 @@ int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
     return rv;
 }
 
-int vmi_api_feature_update_single(uint32_t cpu_num, union kvm_vmi_feature *feature) {
+int vmi_api_feature_update_single(uint32_t cpu_num,
+                                  union kvm_vmi_feature *feature) {
     int rv = 0;
     CPUState *cpu = NULL;
 
@@ -56,6 +57,33 @@ int vmi_api_feature_update_single(uint32_t cpu_num, union kvm_vmi_feature *featu
     if (cpu == NULL)
         return -1;
     rv = kvm_vcpu_ioctl(cpu, KVM_VMI_FEATURE_UPDATE, feature);
+
+    return rv;
+}
+
+int vmi_api_slp_update_all(struct kvm_vmi_slp_perm *slp_perm) {
+    int rv = 0;
+    CPUState *cpu = NULL;
+
+    CPU_FOREACH(cpu) {
+        rv = kvm_vcpu_ioctl(cpu, KVM_VMI_SET_SLP, slp_perm);
+        if (rv < 0) {
+            break;
+        }
+    }
+
+    return rv;
+}
+
+int vmi_api_slp_update_single(uint32_t cpu_num,
+                              struct kvm_vmi_slp_perm *slp_perm) {
+    int rv = 0;
+    CPUState *cpu = NULL;
+
+    cpu = qemu_get_cpu(cpu_num);
+    if (cpu == NULL)
+        return -1;
+    rv = kvm_vcpu_ioctl(cpu, KVM_VMI_SET_SLP, slp_perm);
 
     return rv;
 }
