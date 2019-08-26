@@ -30,8 +30,8 @@ struct vmi_event* vmi_api_get_event(void) {
     return vmi_get_event();
 }
 
-void vmi_api_wait_event(void) {
-    vmi_wait_event();
+int vmi_api_wait_event(time_t secs) {
+    return vmi_wait_event(secs);
 }
 
 int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {

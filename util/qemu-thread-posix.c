@@ -164,6 +164,22 @@ void qemu_cond_wait_impl(QemuCond *cond, QemuMutex *mutex, const char *file, con
         error_exit(err, __func__);
 }
 
+int qemu_cond_timedwait_impl(QemuCond *cond, QemuMutex *mutex, time_t secs, const char *file, const int line)
+{
+    int err;
+    struct timespec ts = {.tv_sec = secs, .tv_nsec = 0};
+
+    assert(cond->initialized);
+    qemu_mutex_pre_unlock(mutex, file, line);
+    err = pthread_cond_timedwait(&cond->cond, &mutex->lock, &ts);
+    qemu_mutex_post_lock(mutex, file, line);
+    if (err == ETIMEDOUT)
+        return -1;
+    else if (err)
+        error_exit(err, __func__);
+    return 0;
+}
+
 void qemu_sem_init(QemuSemaphore *sem, int init)
 {
     int rc;

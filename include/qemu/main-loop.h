@@ -296,6 +296,7 @@ void qemu_mutex_lock_iothread_impl(const char *file, int line);
 void qemu_mutex_unlock_iothread(void);
 
 void qemu_mutex_wait_iothread(QemuCond *cond);
+int qemu_mutex_timedwait_iothread(QemuCond *cond, time_t secs);
 
 /* internal interfaces */
 
