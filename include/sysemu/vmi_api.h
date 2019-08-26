@@ -42,4 +42,6 @@ extern uint64_t vmi_api_get_ram_size(void);
 extern int vmi_api_read_phys_mem(uint64_t addr, void *buf, uint64_t len);
 extern int vmi_api_write_phys_mem(uint64_t addr, const void *buf, uint64_t len);
 
+extern uint32_t vmi_api_get_page_bits(void);
+extern uint32_t vmi_api_get_page_size(void);
 #endif

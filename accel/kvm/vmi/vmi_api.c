@@ -111,3 +111,11 @@ int vmi_api_write_phys_mem(uint64_t addr, const void *buf, uint64_t len) {
     cpu_physical_memory_write(addr, buf, len);
     return 0;
 }
+
+uint32_t vmi_api_get_page_bits(void) {
+    return TARGET_PAGE_BITS;
+}
+
+uint32_t vmi_api_get_page_size(void) {
+    return TARGET_PAGE_SIZE;
+}
