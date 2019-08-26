@@ -1916,6 +1916,15 @@ void qemu_mutex_wait_iothread(QemuCond *cond)
     qemu_cond_wait(cond, &qemu_global_mutex);
 }
 
+int qemu_mutex_timedwait_iothread(QemuCond *cond, time_t secs)
+{
+    if (secs == 0){
+        qemu_mutex_wait_iothread(cond);
+        return 0;
+    }
+    return qemu_cond_timedwait(cond, &qemu_global_mutex, secs*1000);
+}
+
 static bool all_vcpus_paused(void)
 {
     CPUState *cpu;

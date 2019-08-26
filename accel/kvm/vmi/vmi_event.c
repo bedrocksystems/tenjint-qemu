@@ -117,7 +117,8 @@ struct vmi_event* vmi_get_event(void){
     return rv;
 }
 
-void vmi_wait_event(void){
+int vmi_wait_event(time_t secs){
+    int r;
     struct vmi_event_entry *i = NULL;
     struct vmi_event_entry *tmp = NULL;
 
@@ -128,7 +129,7 @@ void vmi_wait_event(void){
     QSIMPLEQ_INIT(vmi_free_queue);
 
     if (!QSIMPLEQ_EMPTY(vmi_event_queue)) {
-        return;
+        return 0;
     }
 
     if (!runstate_is_running()){
@@ -140,11 +141,14 @@ void vmi_wait_event(void){
     }
 
     while(QSIMPLEQ_EMPTY(vmi_event_queue)) {
-        qemu_mutex_wait_iothread(&vmi_event_cv);
+        r = qemu_mutex_timedwait_iothread(&vmi_event_cv, secs);
+        if (r)
+            return r;
     }
 
     cpu_disable_ticks();
     pause_all_vcpus();
+    return 0;
 }
 
 void vmi_wait_init(void){
