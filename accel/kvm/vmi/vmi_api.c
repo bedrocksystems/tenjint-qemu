@@ -34,58 +34,84 @@ int vmi_api_wait_event(time_t secs) {
     return vmi_wait_event(secs);
 }
 
+struct vmi_ioctl_data_t {
+    union {
+        void *data;
+        union kvm_vmi_feature *feature;
+        struct kvm_vmi_slp_perm *slp_perm;
+    };
+    int type;
+    int rv;
+};
+
+static void vmi_api_ioctl(CPUState *cpu, run_on_cpu_data data) {
+    struct vmi_ioctl_data_t *vmi_ioctl_data =
+        (struct vmi_ioctl_data_t*) data.host_ptr;
+
+    vmi_ioctl_data->rv = kvm_vcpu_ioctl(cpu, vmi_ioctl_data->type,
+                                        vmi_ioctl_data->data);
+}
+
 int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
-    int rv = 0;
     CPUState *cpu = NULL;
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.feature = feature,
+                                              .type = KVM_VMI_FEATURE_UPDATE,
+                                              .rv = 0};
 
     CPU_FOREACH(cpu) {
-        rv = kvm_vcpu_ioctl(cpu, KVM_VMI_FEATURE_UPDATE, feature);
-        if (rv < 0) {
+        run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
+        if (vmi_ioctl_data.rv < 0) {
             break;
         }
     }
 
-    return rv;
+    return vmi_ioctl_data.rv;
 }
 
 int vmi_api_feature_update_single(uint32_t cpu_num,
                                   union kvm_vmi_feature *feature) {
-    int rv = 0;
     CPUState *cpu = NULL;
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.feature = feature,
+                                              .type = KVM_VMI_FEATURE_UPDATE,
+                                              .rv = 0};
 
     cpu = qemu_get_cpu(cpu_num);
     if (cpu == NULL)
         return -1;
-    rv = kvm_vcpu_ioctl(cpu, KVM_VMI_FEATURE_UPDATE, feature);
+    run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
 
-    return rv;
+    return vmi_ioctl_data.rv;
 }
 
 int vmi_api_slp_update_all(struct kvm_vmi_slp_perm *slp_perm) {
-    int rv = 0;
     CPUState *cpu = NULL;
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.slp_perm = slp_perm,
+                                              .type = KVM_VMI_SET_SLP,
+                                              .rv = 0};
 
     CPU_FOREACH(cpu) {
-        rv = kvm_vcpu_ioctl(cpu, KVM_VMI_SET_SLP, slp_perm);
-        if (rv < 0) {
+        run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
+        if (vmi_ioctl_data.rv < 0) {
             break;
         }
     }
 
-    return rv;
+    return vmi_ioctl_data.rv;
 }
 
 int vmi_api_slp_update_single(uint32_t cpu_num,
                               struct kvm_vmi_slp_perm *slp_perm) {
-    int rv = 0;
     CPUState *cpu = NULL;
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.slp_perm = slp_perm,
+                                              .type = KVM_VMI_SET_SLP,
+                                              .rv = 0};
 
     cpu = qemu_get_cpu(cpu_num);
     if (cpu == NULL)
         return -1;
-    rv = kvm_vcpu_ioctl(cpu, KVM_VMI_SET_SLP, slp_perm);
+    run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
 
-    return rv;
+    return vmi_ioctl_data.rv;
 }
 
 uint64_t vmi_api_get_num_cpus(void) {
