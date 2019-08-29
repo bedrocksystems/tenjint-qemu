@@ -31,11 +31,13 @@
 #define KVM_VMI_FEATURE_TRAP_TASK_SWITCH  0
 #define KVM_VMI_FEATURE_LBR               1
 #define KVM_VMI_FEATURE_MTF               2
-#define KVM_VMI_FEATURE_MAX               3
+#define KVM_VMI_FEATURE_SLP               3
+#define KVM_VMI_FEATURE_MAX               4
 
 #define KVM_VMI_EVENT_TASK_SWITCH         0
 #define KVM_VMI_EVENT_DEBUG               1
 #define KVM_VMI_EVENT_MTF                 2
+#define KVM_VMI_EVENT_SLP                 3
 
 struct kvm_vmi_feature_task_switch {
     __u32 feature;
@@ -56,11 +58,21 @@ struct kvm_vmi_feature_mtf {
 	__u8  enable;
 };
 
+struct kvm_vmi_feature_slp {
+    __u32 feature;
+    __u8 enable;
+    __u8 global_req;
+    __u64 gfn;
+    __u64 num_pages;
+    __u64 violation;
+};
+
 union kvm_vmi_feature {
     __u32 feature;
     struct kvm_vmi_feature_task_switch ts;
     struct kvm_vmi_feature_lbr lbr;
 	struct kvm_vmi_feature_mtf mtf;
+    struct kvm_vmi_feature_slp slp;
 };
 
 struct kvm_vmi_event_task_switch {
@@ -85,11 +97,20 @@ struct kvm_vmi_event_mtf {
     __u32 cpu_num;
 };
 
+struct kvm_vmi_event_slp {
+    __u32 type;
+    __u32 cpu_num;
+    __u64 violation;
+    __u64 gva;
+    __u64 gpa;
+};
+
 union kvm_vmi_event {
     __u32 type;
     struct kvm_vmi_event_task_switch ts;
     struct kvm_vmi_event_debug debug;
     struct kvm_vmi_event_mtf mtf;
+    struct kvm_vmi_event_slp slp;
 };
 
 struct kvm_vmi_lbr_info {
