@@ -71,6 +71,7 @@ struct kvm_vmi_event_slp {
     __u64 violation;
     __u64 gva;
     __u64 gpa;
+    __u8 rwx;
 };
 
 union kvm_vmi_event {
