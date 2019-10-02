@@ -117,8 +117,8 @@ union kvm_vmi_event {
 struct kvm_vmi_lbr_info {
     __u32 entries;
     __u8 tos;
-    __u64 from[MAX_LBR_ENTRIES];
-    __u64 to[MAX_LBR_ENTRIES];
+    __u64 lbr_from[MAX_LBR_ENTRIES];
+    __u64 lbr_to[MAX_LBR_ENTRIES];
 };
 
 #define KVM_VMI_GET_LBR           _IOW(KVMIO, 0xf8, struct kvm_vmi_lbr_info)
