@@ -3,17 +3,11 @@
 
 #include "qemu/osdep.h"
 
-#include <linux/kvm_vmi.h>
-
 #include "sysemu/cpus.h"
 #include "qom/cpu.h"
 
 struct vmi_ioctl_data_t {
-    union {
-        void *data;
-        union kvm_vmi_feature *feature;
-        struct kvm_vmi_slp_perm *slp_perm;
-    };
+    void *data;
     int type;
     int rv;
 };

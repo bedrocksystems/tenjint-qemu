@@ -37,7 +37,7 @@ int vmi_api_wait_event(time_t secs) {
 
 int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
     CPUState *cpu = NULL;
-    struct vmi_ioctl_data_t vmi_ioctl_data = {.feature = feature,
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.data = feature,
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
 
@@ -54,7 +54,7 @@ int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
 int vmi_api_feature_update_single(uint32_t cpu_num,
                                   union kvm_vmi_feature *feature) {
     CPUState *cpu = NULL;
-    struct vmi_ioctl_data_t vmi_ioctl_data = {.feature = feature,
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.data = feature,
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
 
@@ -68,7 +68,7 @@ int vmi_api_feature_update_single(uint32_t cpu_num,
 
 int vmi_api_slp_update_all(struct kvm_vmi_slp_perm *slp_perm) {
     CPUState *cpu = NULL;
-    struct vmi_ioctl_data_t vmi_ioctl_data = {.slp_perm = slp_perm,
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.data = slp_perm,
                                               .type = KVM_VMI_SET_SLP,
                                               .rv = 0};
 
@@ -85,7 +85,7 @@ int vmi_api_slp_update_all(struct kvm_vmi_slp_perm *slp_perm) {
 int vmi_api_slp_update_single(uint32_t cpu_num,
                               struct kvm_vmi_slp_perm *slp_perm) {
     CPUState *cpu = NULL;
-    struct vmi_ioctl_data_t vmi_ioctl_data = {.slp_perm = slp_perm,
+    struct vmi_ioctl_data_t vmi_ioctl_data = {.data = slp_perm,
                                               .type = KVM_VMI_SET_SLP,
                                               .rv = 0};
 
