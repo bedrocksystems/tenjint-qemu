@@ -6,6 +6,7 @@
 #include "qom/cpu.h"
 #include "sysemu/kvm.h"
 #include "sysemu/vmi_api.h"
+#include "sysemu/vmi_ioctl.h"
 #include "qemu/main-loop.h"
 #include "exec/cpu-common.h"
 
@@ -32,24 +33,6 @@ struct vmi_event* vmi_api_get_event(void) {
 
 int vmi_api_wait_event(time_t secs) {
     return vmi_wait_event(secs);
-}
-
-struct vmi_ioctl_data_t {
-    union {
-        void *data;
-        union kvm_vmi_feature *feature;
-        struct kvm_vmi_slp_perm *slp_perm;
-    };
-    int type;
-    int rv;
-};
-
-static void vmi_api_ioctl(CPUState *cpu, run_on_cpu_data data) {
-    struct vmi_ioctl_data_t *vmi_ioctl_data =
-        (struct vmi_ioctl_data_t*) data.host_ptr;
-
-    vmi_ioctl_data->rv = kvm_vcpu_ioctl(cpu, vmi_ioctl_data->type,
-                                        vmi_ioctl_data->data);
 }
 
 int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
