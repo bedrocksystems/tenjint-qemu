@@ -89,7 +89,6 @@ struct kvm_vmi_event_debug {
     __u8 watchpoint;
     __u64 watchpoint_gva;
     __s32 watchpoint_flags;
-    __s32 exception;
 };
 
 struct kvm_vmi_event_mtf {

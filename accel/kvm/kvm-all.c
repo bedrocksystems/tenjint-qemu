@@ -92,6 +92,7 @@ struct KVMState
     int debugregs;
 #ifdef KVM_CAP_SET_GUEST_DEBUG
     QTAILQ_HEAD(, kvm_sw_breakpoint) kvm_sw_breakpoints;
+    QTAILQ_HEAD(, kvm_sw_breakpoint) kvm_phys_breakpoints;
 #endif
     int max_nested_state_len;
     int many_ioeventfds;
@@ -1869,6 +1870,7 @@ static int kvm_init(MachineState *ms)
 
 #ifdef KVM_CAP_SET_GUEST_DEBUG
     QTAILQ_INIT(&s->kvm_sw_breakpoints);
+    QTAILQ_INIT(&s->kvm_phys_breakpoints);
 #endif
     QLIST_INIT(&s->kvm_parked_vcpus);
     s->vmfd = -1;
@@ -2768,9 +2770,99 @@ void kvm_remove_all_breakpoints(CPUState *cpu)
     }
     kvm_arch_remove_all_hw_breakpoints();
 
+    // Remove Physical BPs
+    QTAILQ_FOREACH_SAFE(bp, &kvm_state->kvm_phys_breakpoints, entry,
+                        next) {
+        kvm_arch_remove_phys_breakpoint(bp);
+        QTAILQ_REMOVE(&kvm_state->kvm_phys_breakpoints, bp, entry);
+        g_free(bp);
+    }
+
     CPU_FOREACH(cpu) {
         kvm_update_guest_debug(cpu, 0);
     }
+}
+
+int kvm_phys_breakpoints_active(void)
+{
+    return !QTAILQ_EMPTY(&kvm_state->kvm_phys_breakpoints);
+}
+
+struct kvm_sw_breakpoint *kvm_find_phys_breakpoint(target_ulong pc)
+{
+    struct kvm_sw_breakpoint *bp;
+
+    QTAILQ_FOREACH(bp, &kvm_state->kvm_phys_breakpoints, entry) {
+        if (bp->pc == pc) {
+            return bp;
+        }
+    }
+    return NULL;
+}
+
+int kvm_insert_phys_breakpoint(target_ulong addr)
+{
+    struct kvm_sw_breakpoint *bp;
+    CPUState *cpu;
+    int err;
+
+    bp = kvm_find_phys_breakpoint(addr);
+    if (bp) {
+        bp->use_count++;
+        return 0;
+    }
+
+    bp = g_malloc(sizeof(struct kvm_sw_breakpoint));
+    bp->pc = addr;
+    bp->use_count = 1;
+    err = kvm_arch_insert_phys_breakpoint(bp);
+    if (err) {
+        g_free(bp);
+        return err;
+    }
+
+    QTAILQ_INSERT_HEAD(&kvm_state->kvm_phys_breakpoints, bp, entry);
+
+    CPU_FOREACH(cpu) {
+        err = kvm_update_guest_debug(cpu, 0);
+        if (err) {
+            return err;
+        }
+    }
+    return 0;
+}
+
+int kvm_remove_phys_breakpoint(target_ulong addr)
+{
+    struct kvm_sw_breakpoint *bp;
+    CPUState *cpu;
+    int err;
+
+    bp = kvm_find_phys_breakpoint(addr);
+    if (!bp) {
+        return -ENOENT;
+    }
+
+    if (bp->use_count > 1) {
+        bp->use_count--;
+        return 0;
+    }
+
+    err = kvm_arch_remove_phys_breakpoint(bp);
+    if (err) {
+        return err;
+    }
+
+    QTAILQ_REMOVE(&kvm_state->kvm_phys_breakpoints, bp, entry);
+    g_free(bp);
+
+    CPU_FOREACH(cpu) {
+        err = kvm_update_guest_debug(cpu, 0);
+        if (err) {
+            return err;
+        }
+    }
+    return 0;
 }
 
 #else /* !KVM_CAP_SET_GUEST_DEBUG */

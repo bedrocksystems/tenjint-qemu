@@ -131,6 +131,7 @@ int main(int argc, char **argv)
 #include "qapi/qmp/qerror.h"
 #include "sysemu/iothread.h"
 #include "qemu/guest-random.h"
+#include "sysemu/vmi.h"
 
 #define MAX_VIRTIO_CONSOLES 1
 
@@ -4461,7 +4462,7 @@ int main(int argc, char **argv, char **envp)
             error_reportf_err(local_err, "-incoming %s: ", incoming);
             exit(1);
         }
-    } else if (!current_machine->vmi_initialized && autostart) {
+    } else if (!vmi_initialized() && autostart) {
         vm_start();
     }
 

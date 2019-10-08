@@ -5,6 +5,7 @@
 #include "sysemu/cpus.h"
 #include "sysemu/vmi_event.h"
 #include "sysemu/vmi_api.h"
+#include "sysemu/vmi.h"
 #include "qemu/thread.h"
 #include "qemu/main-loop.h"
 #include "hw/boards.h"
@@ -13,6 +14,7 @@
 
 #define PY_STRING_SZ 2048
 
+static bool _vmi_initialized = false;
 static QemuThread *python_thread = NULL;
 
 static void* vmi_python_thread_func(void *arg){
@@ -48,7 +50,7 @@ int vmi_init(MachineState *ms) {
     qemu_thread_create(python_thread, "python", vmi_python_thread_func,
                        ms->vmi_configs, 0);
 
-    ms->vmi_initialized = true;
+    _vmi_initialized = true;
 
     return rv;
 }
@@ -56,7 +58,7 @@ int vmi_init(MachineState *ms) {
 void vmi_setup_post(MachineState *ms, AccelState *accel){
     struct vmi_event *event = NULL;
 
-    if(!ms->vmi){
+    if(!_vmi_initialized){
         return;
     }
 
@@ -72,6 +74,8 @@ void vmi_uninit(MachineState *ms, AccelState *accel){
         return;
     }
 
+    _vmi_initialized = false;
+
     event = g_malloc0(sizeof(struct vmi_event));
     event->type = VMI_EVENT_VM_SHUTDOWN;
     vmi_put_event(event);
@@ -83,4 +87,8 @@ void vmi_uninit(MachineState *ms, AccelState *accel){
     python_thread = NULL;
 
     vmi_event_uninit(ms, accel);
+}
+
+bool vmi_initialized(void) {
+    return _vmi_initialized;
 }

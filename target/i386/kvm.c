@@ -26,6 +26,7 @@
 #include "sysemu/kvm_int.h"
 #include "sysemu/reset.h"
 #include "sysemu/runstate.h"
+#include "sysemu/vmi.h"
 #include "kvm_i386.h"
 #include "hyperv.h"
 #include "hyperv-proto.h"
@@ -4215,6 +4216,27 @@ int kvm_arch_remove_sw_breakpoint(CPUState *cs, struct kvm_sw_breakpoint *bp)
     return 0;
 }
 
+int kvm_arch_insert_phys_breakpoint(struct kvm_sw_breakpoint *bp)
+{
+    static const uint8_t int3 = 0xcc;
+
+    cpu_physical_memory_rw(bp->pc, (uint8_t *)&bp->saved_insn, 1, 0);
+    cpu_physical_memory_rw(bp->pc, (uint8_t *)&int3, 1, 1);
+    return 0;
+}
+
+int kvm_arch_remove_phys_breakpoint(struct kvm_sw_breakpoint *bp)
+{
+    uint8_t int3;
+
+    cpu_physical_memory_rw(bp->pc, &int3, 1, 0);
+    if (int3 != 0xcc) {
+        return -EINVAL;
+    }
+    cpu_physical_memory_rw(bp->pc, (uint8_t *)&bp->saved_insn, 1, 1);
+    return 0;
+}
+
 static struct {
     target_ulong addr;
     int len;
@@ -4337,6 +4359,16 @@ static int kvm_handle_debug(X86CPU *cpu,
         }
     } else if (kvm_find_sw_breakpoint(cs, arch_info->pc)) {
         ret = EXCP_DEBUG;
+    } else if (kvm_find_phys_breakpoint(arch_info->pc)) {
+        struct kvm_vmi_event_debug *event =
+                    (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
+
+        assert(vmi_initialized());
+
+        memset(event, 0, sizeof(union kvm_vmi_event));
+        event->type = KVM_VMI_EVENT_DEBUG;
+        event->cpu_num = cs->cpu_index;
+        ret = EXCP_VMI;
     }
     if (ret == 0) {
         cpu_synchronize_state(cs);
@@ -4364,7 +4396,7 @@ void kvm_arch_update_guest_debug(CPUState *cpu, struct kvm_guest_debug *dbg)
     };
     int n;
 
-    if (kvm_sw_breakpoints_active(cpu)) {
+    if (kvm_sw_breakpoints_active(cpu) || kvm_phys_breakpoints_active()) {
         dbg->control |= KVM_GUESTDBG_ENABLE | KVM_GUESTDBG_USE_SW_BP;
     }
     if (nb_hw_breakpoint > 0) {
