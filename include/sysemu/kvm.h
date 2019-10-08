@@ -427,6 +427,13 @@ int kvm_arch_remove_hw_breakpoint(target_ulong addr,
                                   target_ulong len, int type);
 void kvm_arch_remove_all_hw_breakpoints(void);
 
+struct kvm_sw_breakpoint *kvm_find_phys_breakpoint(target_ulong pc);
+int kvm_phys_breakpoints_active(void);
+int kvm_insert_phys_breakpoint(target_ulong addr);
+int kvm_remove_phys_breakpoint(target_ulong addr);
+int kvm_arch_insert_phys_breakpoint(struct kvm_sw_breakpoint *bp);
+int kvm_arch_remove_phys_breakpoint(struct kvm_sw_breakpoint *bp);
+
 void kvm_arch_update_guest_debug(CPUState *cpu, struct kvm_guest_debug *dbg);
 
 bool kvm_arch_stop_on_emulation_error(CPUState *cpu);
