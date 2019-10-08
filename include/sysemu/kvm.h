@@ -429,6 +429,8 @@ void kvm_arch_remove_all_hw_breakpoints(void);
 
 struct kvm_sw_breakpoint *kvm_find_phys_breakpoint(target_ulong pc);
 int kvm_phys_breakpoints_active(void);
+void kvm_enable_phys_breakpoints(void);
+void kvm_disable_phys_breakpoints(void);
 int kvm_insert_phys_breakpoint(target_ulong addr);
 int kvm_remove_phys_breakpoint(target_ulong addr);
 int kvm_arch_insert_phys_breakpoint(struct kvm_sw_breakpoint *bp);
