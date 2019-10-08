@@ -35,11 +35,42 @@ int vmi_api_wait_event(time_t secs) {
     return vmi_wait_event(secs);
 }
 
+static int vmi_api_debug_feature_update(CPUState *cpu,
+                                 struct kvm_vmi_feature_debug *feature) {
+    if (feature->enable) {
+        if (feature->single_step) {
+            return -EINVAL;
+        }
+        else if(feature->watchpoint) {
+            return -EINVAL;
+        }
+        else {
+            kvm_insert_phys_breakpoint(feature->addr);
+        }
+    }
+    else {
+        if (feature->single_step) {
+            return -EINVAL;
+        }
+        else if(feature->watchpoint) {
+            return -EINVAL;
+        }
+        else {
+            kvm_remove_phys_breakpoint(feature->addr);
+        }
+    }
+}
+
 int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
     CPUState *cpu = NULL;
     struct vmi_ioctl_data_t vmi_ioctl_data = {.data = feature,
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
+
+    if (feature->feature == KVM_VMI_FEATURE_DEBUG) {
+        return vmi_api_debug_feature_update(NULL,
+                                        (struct kvm_vmi_feature_debug*)feature);
+    }
 
     CPU_FOREACH(cpu) {
         run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
@@ -57,8 +88,13 @@ int vmi_api_feature_update_single(uint32_t cpu_num,
     struct vmi_ioctl_data_t vmi_ioctl_data = {.data = feature,
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
-
     cpu = qemu_get_cpu(cpu_num);
+
+    if (feature->feature == KVM_VMI_FEATURE_DEBUG) {
+        return vmi_api_debug_feature_update(cpu,
+                                        (struct kvm_vmi_feature_debug*)feature);
+    }
+
     if (cpu == NULL)
         return -1;
     run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
