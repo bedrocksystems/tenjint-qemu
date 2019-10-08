@@ -7,6 +7,7 @@
 #include "sysemu/vmi_event.h"
 #include "sysemu/vmi_api.h"
 #include "sysemu/sysemu.h"
+#include "sysemu/kvm.h"
 
 #include "vmi.h"
 
@@ -132,6 +133,8 @@ int vmi_wait_event(time_t secs){
         return 0;
     }
 
+    kvm_enable_phys_breakpoints();
+
     if (!runstate_is_running()){
         vm_start();
     }
@@ -148,6 +151,9 @@ int vmi_wait_event(time_t secs){
 
     cpu_disable_ticks();
     pause_all_vcpus();
+
+    kvm_disable_phys_breakpoints();
+
     return 0;
 }
 
