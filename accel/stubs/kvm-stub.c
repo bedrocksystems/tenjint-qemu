@@ -13,6 +13,7 @@
 #include "qemu/osdep.h"
 #include "cpu.h"
 #include "sysemu/kvm.h"
+#include "sysemu/vmi.h"
 
 #ifndef CONFIG_USER_ONLY
 #include "hw/pci/msi.h"
@@ -31,6 +32,10 @@ bool kvm_allowed;
 bool kvm_readonly_mem_allowed;
 bool kvm_ioeventfd_any_length_allowed;
 bool kvm_msi_use_devid;
+
+bool vmi_initialized(void) {
+    return false;
+}
 
 int kvm_destroy_vcpu(CPUState *cpu)
 {
