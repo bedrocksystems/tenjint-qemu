@@ -367,9 +367,9 @@ static inline const char *gicv3_class_name(void)
  * @cs: CPUState
  * @debug_exit: debug part of the KVM exit structure
  *
- * Returns: TRUE if the debug exception was handled.
+ * Returns: 0 if the debug exception should not be handled.
  */
-bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit);
+int kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit);
 
 /**
  * kvm_arm_hw_debug_active:
