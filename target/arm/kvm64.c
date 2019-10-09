@@ -1045,7 +1045,7 @@ int kvm_arch_remove_phys_breakpoint(struct kvm_sw_breakpoint *bp)
     static uint32_t brk;
 
     if (have_guest_debug) {
-        cpu_physical_memory_rw(bp->pc, &brk 4, 0);
+        cpu_physical_memory_rw(bp->pc, &brk, 4, 0);
         if (brk != brk_insn) {
             return -EINVAL;
         }
@@ -1064,7 +1064,7 @@ int kvm_arch_remove_phys_breakpoint(struct kvm_sw_breakpoint *bp)
  * register value to be decoded in QEMU.
  */
 
-bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
+int kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
 {
     int hsr_ec = syn_get_ec(debug_exit->hsr);
     ARMCPU *cpu = ARM_CPU(cs);
@@ -1078,7 +1078,7 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
     switch (hsr_ec) {
     case EC_SOFTWARESTEP:
         if (cs->singlestep_enabled) {
-            return true;
+            return EXCP_DEBUG;
         } else {
             /*
              * The kernel should have suppressed the guest's ability to
@@ -1087,12 +1087,12 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
             error_report("%s: guest single-step while debugging unsupported"
                          " (%"PRIx64", %"PRIx32")",
                          __func__, env->pc, debug_exit->hsr);
-            return false;
+            return 0;
         }
         break;
     case EC_AA64_BKPT:
         if (kvm_find_sw_breakpoint(cs, env->pc)) {
-            return true;
+            return EXCP_DEBUG;;
         }
         else {
             phys_addr = cpu_get_phys_page_debug(cs, env->pc & TARGET_PAGE_MASK);
@@ -1109,13 +1109,13 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
                 event->cpu_num = cs->cpu_index;
                 event->breakpoint_gva = env->pc;
                 event->breakpoint_gpa = phys_addr;
-                ret = EXCP_VMI;
+                return EXCP_VMI;
             }
         }
         break;
     case EC_BREAKPOINT:
         if (find_hw_breakpoint(cs, env->pc)) {
-            return true;
+            return EXCP_DEBUG;
         }
         break;
     case EC_WATCHPOINT:
@@ -1123,7 +1123,7 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
         CPUWatchpoint *wp = find_hw_watchpoint(cs, debug_exit->far);
         if (wp) {
             cs->watchpoint_hit = wp;
-            return true;
+            return EXCP_DEBUG;
         }
         break;
     }
@@ -1144,5 +1144,5 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
     cc->do_interrupt(cs);
     qemu_mutex_unlock_iothread();
 
-    return false;
+    return 0;
 }

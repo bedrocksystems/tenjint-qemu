@@ -658,9 +658,8 @@ int kvm_arch_handle_exit(CPUState *cs, struct kvm_run *run)
 
     switch (run->exit_reason) {
     case KVM_EXIT_DEBUG:
-        if (kvm_arm_handle_debug(cs, &run->debug.arch)) {
-            ret = EXCP_DEBUG;
-        } /* otherwise return to guest */
+        ret = kvm_arm_handle_debug(cs, &run->debug.arch);
+         /* otherwise return to guest */
         break;
     default:
         qemu_log_mask(LOG_UNIMP, "%s: un-handled exit reason %d\n",
