@@ -2469,22 +2469,34 @@ struct kvm_sw_breakpoint *kvm_find_phys_breakpoint(target_ulong pc)
     return NULL;
 }
 
+static bool _phys_breakpoints_enabled = false;
+
 void kvm_enable_phys_breakpoints(void) {
     struct kvm_sw_breakpoint *bp, *next;
+
+    if (_phys_breakpoints_enabled)
+        return;
 
     QTAILQ_FOREACH_SAFE(bp, &kvm_state->kvm_phys_breakpoints, entry,
                         next) {
         kvm_arch_insert_phys_breakpoint(bp);
     }
+
+    _phys_breakpoints_enabled = true;
 }
 
 void kvm_disable_phys_breakpoints(void) {
     struct kvm_sw_breakpoint *bp, *next;
 
+    if (!_phys_breakpoints_enabled)
+        return;
+
     QTAILQ_FOREACH_SAFE(bp, &kvm_state->kvm_phys_breakpoints, entry,
                         next) {
         kvm_arch_remove_phys_breakpoint(bp);
     }
+
+    _phys_breakpoints_enabled = false;
 }
 
 int kvm_insert_phys_breakpoint(target_ulong addr)
