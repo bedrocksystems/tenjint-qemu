@@ -45,7 +45,7 @@ static int vmi_api_debug_feature_update(CPUState *cpu,
             return -EINVAL;
         }
         else {
-            kvm_insert_phys_breakpoint(feature->addr);
+            return kvm_insert_phys_breakpoint(feature->addr);
         }
     }
     else {
@@ -56,7 +56,7 @@ static int vmi_api_debug_feature_update(CPUState *cpu,
             return -EINVAL;
         }
         else {
-            kvm_remove_phys_breakpoint(feature->addr);
+            return kvm_remove_phys_breakpoint(feature->addr);
         }
     }
 }

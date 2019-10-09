@@ -4328,6 +4328,7 @@ static int kvm_handle_debug(X86CPU *cpu,
     CPUX86State *env = &cpu->env;
     int ret = 0;
     int n;
+    hwaddr phys_addr;
 
     if (arch_info->exception == EXCP01_DB) {
         if (arch_info->dr6 & DR6_BS) {
@@ -4359,16 +4360,23 @@ static int kvm_handle_debug(X86CPU *cpu,
         }
     } else if (kvm_find_sw_breakpoint(cs, arch_info->pc)) {
         ret = EXCP_DEBUG;
-    } else if (kvm_find_phys_breakpoint(arch_info->pc)) {
-        struct kvm_vmi_event_debug *event =
-                    (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
+    } else {
+        phys_addr = cpu_get_phys_page_debug(cs, arch_info->pc & TARGET_PAGE_MASK);
+        phys_addr += arch_info->pc & ~TARGET_PAGE_MASK;
 
-        assert(vmi_initialized());
+        if (kvm_find_phys_breakpoint(phys_addr)) {
+            struct kvm_vmi_event_debug *event =
+                        (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
 
-        memset(event, 0, sizeof(union kvm_vmi_event));
-        event->type = KVM_VMI_EVENT_DEBUG;
-        event->cpu_num = cs->cpu_index;
-        ret = EXCP_VMI;
+            assert(vmi_initialized());
+
+            memset(event, 0, sizeof(union kvm_vmi_event));
+            event->type = KVM_VMI_EVENT_DEBUG;
+            event->cpu_num = cs->cpu_index;
+            event->breakpoint_gva = arch_info->pc;
+            event->breakpoint_gpa = phys_addr;
+            ret = EXCP_VMI;
+        }
     }
     if (ret == 0) {
         cpu_synchronize_state(cs);

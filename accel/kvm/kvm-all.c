@@ -2805,7 +2805,7 @@ void kvm_enable_phys_breakpoints(void) {
 
     QTAILQ_FOREACH_SAFE(bp, &kvm_state->kvm_phys_breakpoints, entry,
                         next) {
-        kvm_arch_remove_phys_breakpoint(bp);
+        kvm_arch_insert_phys_breakpoint(bp);
     }
 }
 
@@ -2814,7 +2814,7 @@ void kvm_disable_phys_breakpoints(void) {
 
     QTAILQ_FOREACH_SAFE(bp, &kvm_state->kvm_phys_breakpoints, entry,
                         next) {
-        kvm_arch_insert_phys_breakpoint(bp);
+        kvm_arch_remove_phys_breakpoint(bp);
     }
 }
 
@@ -2833,11 +2833,6 @@ int kvm_insert_phys_breakpoint(target_ulong addr)
     bp = g_malloc(sizeof(struct kvm_sw_breakpoint));
     bp->pc = addr;
     bp->use_count = 1;
-    err = kvm_arch_insert_phys_breakpoint(bp);
-    if (err) {
-        g_free(bp);
-        return err;
-    }
 
     QTAILQ_INSERT_HEAD(&kvm_state->kvm_phys_breakpoints, bp, entry);
 
@@ -2864,11 +2859,6 @@ int kvm_remove_phys_breakpoint(target_ulong addr)
     if (bp->use_count > 1) {
         bp->use_count--;
         return 0;
-    }
-
-    err = kvm_arch_remove_phys_breakpoint(bp);
-    if (err) {
-        return err;
     }
 
     QTAILQ_REMOVE(&kvm_state->kvm_phys_breakpoints, bp, entry);
