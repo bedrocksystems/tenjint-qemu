@@ -1045,7 +1045,7 @@ int kvm_arch_remove_phys_breakpoint(struct kvm_sw_breakpoint *bp)
     static uint32_t brk;
 
     if (have_guest_debug) {
-        cpu_physical_memory_rw(bp->pc, &brk, 4, 0);
+        cpu_physical_memory_rw(bp->pc, (uint8_t *)&brk, 4, 0);
         if (brk != brk_insn) {
             return -EINVAL;
         }
