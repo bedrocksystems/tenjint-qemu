@@ -82,6 +82,7 @@ union kvm_vmi_feature {
 	struct kvm_vmi_feature_lbr lbr;
 	struct kvm_vmi_feature_mtf mtf;
 	struct kvm_vmi_feature_slp slp;
+	struct kvm_vmi_feature_debug debug;
 };
 
 struct kvm_vmi_event_task_switch {
@@ -98,6 +99,8 @@ struct kvm_vmi_event_debug {
 	__u8 watchpoint;
 	__u64 watchpoint_gva;
 	__s32 watchpoint_flags;
+	__u64 breakpoint_gva;
+	__u64 breakpoint_gpa;
 };
 
 struct kvm_vmi_event_mtf {
