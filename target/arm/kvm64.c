@@ -25,6 +25,7 @@
 #include "exec/gdbstub.h"
 #include "sysemu/kvm.h"
 #include "sysemu/kvm_int.h"
+#include "sysemu/vmi.h"
 #include "kvm_arm.h"
 #include "hw/boards.h"
 #include "internals.h"
@@ -1329,6 +1330,35 @@ int kvm_arch_remove_sw_breakpoint(CPUState *cs, struct kvm_sw_breakpoint *bp)
     }
 }
 
+int kvm_arch_insert_phys_breakpoint(struct kvm_sw_breakpoint *bp)
+{
+    if (have_guest_debug) {
+        cpu_physical_memory_rw(bp->pc, (uint8_t *)&bp->saved_insn, 4, 0);
+        cpu_physical_memory_rw(bp->pc, (uint8_t *)&brk_insn, 4, 1);
+        return 0;
+    } else {
+        error_report("guest debug not supported on this kernel");
+        return -EINVAL;
+    }
+}
+
+int kvm_arch_remove_phys_breakpoint(struct kvm_sw_breakpoint *bp)
+{
+    static uint32_t brk;
+
+    if (have_guest_debug) {
+        cpu_physical_memory_rw(bp->pc, &brk 4, 0);
+        if (brk != brk_insn) {
+            return -EINVAL;
+        }
+        cpu_physical_memory_rw(bp->pc, (uint8_t *)&bp->saved_insn, 4, 1);
+        return 0;
+    } else {
+        error_report("guest debug not supported on this kernel");
+        return -EINVAL;
+    }
+}
+
 /* See v8 ARM ARM D7.2.27 ESR_ELx, Exception Syndrome Register
  *
  * To minimise translating between kernel and user-space the kernel
@@ -1342,6 +1372,7 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
     ARMCPU *cpu = ARM_CPU(cs);
     CPUClass *cc = CPU_GET_CLASS(cs);
     CPUARMState *env = &cpu->env;
+    hwaddr phys_addr;
 
     /* Ensure PC is synchronised */
     kvm_cpu_synchronize_state(cs);
@@ -1364,6 +1395,24 @@ bool kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
     case EC_AA64_BKPT:
         if (kvm_find_sw_breakpoint(cs, env->pc)) {
             return true;
+        }
+        else {
+            phys_addr = cpu_get_phys_page_debug(cs, env->pc & TARGET_PAGE_MASK);
+            phys_addr += env->pc & ~TARGET_PAGE_MASK;
+
+            if (kvm_find_phys_breakpoint(phys_addr)) {
+                struct kvm_vmi_event_debug *event =
+                            (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
+
+                assert(vmi_initialized());
+
+                memset(event, 0, sizeof(union kvm_vmi_event));
+                event->type = KVM_VMI_EVENT_DEBUG;
+                event->cpu_num = cs->cpu_index;
+                event->breakpoint_gva = env->pc;
+                event->breakpoint_gpa = phys_addr;
+                ret = EXCP_VMI;
+            }
         }
         break;
     case EC_BREAKPOINT:
