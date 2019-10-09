@@ -130,7 +130,7 @@ int vmi_wait_event(time_t secs){
     QSIMPLEQ_INIT(vmi_free_queue);
 
     if (!QSIMPLEQ_EMPTY(vmi_event_queue)) {
-        return 0;
+        goto out;
     }
 
     kvm_enable_phys_breakpoints();
@@ -149,6 +149,7 @@ int vmi_wait_event(time_t secs){
             return r;
     }
 
+out:
     cpu_disable_ticks();
     pause_all_vcpus();
 
