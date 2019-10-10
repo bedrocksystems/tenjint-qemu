@@ -1380,7 +1380,18 @@ int kvm_arm_handle_debug(CPUState *cs, struct kvm_debug_exit_arch *debug_exit)
     switch (hsr_ec) {
     case EC_SOFTWARESTEP:
         if (cs->singlestep_enabled) {
-            return EXCP_DEBUG;
+            if (cs->vmi_singlestep_enabled) {
+                struct kvm_vmi_event_debug *event =
+                    (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
+
+                memset(event, 0, sizeof(union kvm_vmi_event));
+                event->type = KVM_VMI_EVENT_DEBUG;
+                event->cpu_num = cs->cpu_index;
+                event->single_step = 1;
+                return EXCP_VMI;
+            }
+            else
+                return EXCP_DEBUG;
         } else {
             /*
              * The kernel should have suppressed the guest's ability to

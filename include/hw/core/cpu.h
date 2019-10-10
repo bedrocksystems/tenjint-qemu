@@ -315,6 +315,7 @@ struct qemu_work_item;
  * @unplug: Indicates a pending CPU unplug request.
  * @crash_occurred: Indicates the OS reported a crash (panic) for this CPU
  * @singlestep_enabled: Flags for single-stepping.
+ * @vmi_singlestep_enabled: Flags for VMI single-stepping.
  * @icount_extra: Instructions until next timer event.
  * @can_do_io: Nonzero if memory-mapped IO is safe. Deterministic execution
  * requires that IO only be performed on the last instruction of a TB
@@ -372,6 +373,7 @@ struct CPUState {
     /* updates protected by BQL */
     uint32_t interrupt_request;
     int singlestep_enabled;
+    int vmi_singlestep_enabled;
     int64_t icount_budget;
     int64_t icount_extra;
     uint64_t random_seed;

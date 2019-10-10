@@ -4333,7 +4333,18 @@ static int kvm_handle_debug(X86CPU *cpu,
     if (arch_info->exception == EXCP01_DB) {
         if (arch_info->dr6 & DR6_BS) {
             if (cs->singlestep_enabled) {
-                ret = EXCP_DEBUG;
+                if (cs->vmi_singlestep_enabled) {
+                    struct kvm_vmi_event_debug *event =
+                        (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
+
+                    memset(event, 0, sizeof(union kvm_vmi_event));
+                    event->type = KVM_VMI_EVENT_DEBUG;
+                    event->cpu_num = cs->cpu_index;
+                    event->single_step = 1;
+                    ret = EXCP_VMI;
+                }
+                else
+                    ret = EXCP_DEBUG;
             }
         } else {
             for (n = 0; n < 4; n++) {
