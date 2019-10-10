@@ -310,6 +310,7 @@ struct qemu_work_item;
  * @unplug: Indicates a pending CPU unplug request.
  * @crash_occurred: Indicates the OS reported a crash (panic) for this CPU
  * @singlestep_enabled: Flags for single-stepping.
+ * @vmi_singlestep_enabled: Flags for VMI single-stepping.
  * @icount_extra: Instructions until next timer event.
  * @icount_decr: Low 16 bits: number of cycles left, only used in icount mode.
  * High 16 bits: Set to -1 to force TCG to stop executing linked TBs for this
@@ -370,6 +371,7 @@ struct CPUState {
     /* updates protected by BQL */
     uint32_t interrupt_request;
     int singlestep_enabled;
+    int vmi_singlestep_enabled;
     int64_t icount_budget;
     int64_t icount_extra;
     sigjmp_buf jmp_env;

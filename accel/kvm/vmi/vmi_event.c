@@ -122,6 +122,8 @@ int vmi_wait_event(time_t secs){
     int r;
     struct vmi_event_entry *i = NULL;
     struct vmi_event_entry *tmp = NULL;
+    CPUState *cpu = NULL;
+    CPUState *resume_cpu = NULL;
 
     QSIMPLEQ_FOREACH_SAFE(i, vmi_free_queue, entry, tmp) {
         g_free(i->event);
@@ -133,14 +135,27 @@ int vmi_wait_event(time_t secs){
         goto out;
     }
 
-    kvm_enable_phys_breakpoints();
-
-    if (!runstate_is_running()){
-        vm_start();
+    CPU_FOREACH(cpu) {
+        if (cpu->vmi_singlestep_enabled) {
+            resume_cpu = cpu;
+            break;
+        }
     }
-    else{
-        cpu_enable_ticks();
-        resume_all_vcpus();
+
+    if (resume_cpu != NULL) {
+        cpu_resume(resume_cpu);
+    }
+    else {
+        // Only enable BPs if we are not single stepping
+        kvm_enable_phys_breakpoints();
+
+        if (!runstate_is_running()){
+            vm_start();
+        }
+        else{
+            cpu_enable_ticks();
+            resume_all_vcpus();
+        }
     }
 
     while(QSIMPLEQ_EMPTY(vmi_event_queue)) {

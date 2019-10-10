@@ -39,7 +39,9 @@ static int vmi_api_debug_feature_update(CPUState *cpu,
                                  struct kvm_vmi_feature_debug *feature) {
     if (feature->enable) {
         if (feature->single_step) {
-            return -EINVAL;
+            cpu->vmi_singlestep_enabled = 1;
+            cpu_single_step(cpu, 1);
+            return 0;
         }
         else if(feature->watchpoint) {
             return -EINVAL;
@@ -50,7 +52,9 @@ static int vmi_api_debug_feature_update(CPUState *cpu,
     }
     else {
         if (feature->single_step) {
-            return -EINVAL;
+            cpu->vmi_singlestep_enabled = 0;
+            cpu_single_step(cpu, 0);
+            return 0;
         }
         else if(feature->watchpoint) {
             return -EINVAL;
