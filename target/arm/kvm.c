@@ -685,7 +685,7 @@ int kvm_arch_process_async_events(CPUState *cs)
 void kvm_arch_update_guest_debug(CPUState *cs, struct kvm_guest_debug *dbg)
 {
 #ifdef KVM_GUESTDBG_USE_SW_BP
-    if (kvm_sw_breakpoints_active(cs)) {
+    if (kvm_sw_breakpoints_active(cs)  || kvm_phys_breakpoints_active()) {
         dbg->control |= KVM_GUESTDBG_ENABLE | KVM_GUESTDBG_USE_SW_BP;
     }
 #endif
