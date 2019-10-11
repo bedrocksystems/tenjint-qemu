@@ -39,6 +39,8 @@ static int vmi_api_debug_feature_update(CPUState *cpu,
                                  struct kvm_vmi_feature_debug *feature) {
     if (feature->enable) {
         if (feature->single_step) {
+            if (cpu == NULL)
+                return -EINVAL;
             cpu->vmi_singlestep_enabled = 1;
             cpu_single_step(cpu, 1);
             return 0;
@@ -52,6 +54,8 @@ static int vmi_api_debug_feature_update(CPUState *cpu,
     }
     else {
         if (feature->single_step) {
+            if (cpu == NULL)
+                return -EINVAL;
             cpu->vmi_singlestep_enabled = 0;
             cpu_single_step(cpu, 0);
             return 0;
@@ -71,6 +75,13 @@ int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
 
+    if (feature->feature == KVM_VMI_FEATURE_MTF) {
+        // mtf single step should not be enabled once on all cpus
+        // this is to remain consistant with the debug single step.
+        // One can still single step multiple cpus, they need to
+        // be called seperately.
+        return -EINVAL;
+    }
     if (feature->feature == KVM_VMI_FEATURE_DEBUG) {
         return vmi_api_debug_feature_update(NULL,
                                         (struct kvm_vmi_feature_debug*)feature);
@@ -93,14 +104,21 @@ int vmi_api_feature_update_single(uint32_t cpu_num,
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
     cpu = qemu_get_cpu(cpu_num);
+    if (cpu == NULL)
+        return -EINVAL;
 
     if (feature->feature == KVM_VMI_FEATURE_DEBUG) {
         return vmi_api_debug_feature_update(cpu,
                                         (struct kvm_vmi_feature_debug*)feature);
     }
+    else if (feature->feature == KVM_VMI_FEATURE_MTF) {
+        struct kvm_vmi_feature_mtf *mtf = (struct kvm_vmi_feature_mtf*)feature;
+        if (mtf->enable)
+            cpu->vmi_singlestep_enabled = 2;
+        else
+            cpu->vmi_singlestep_enabled = 0;
+    }
 
-    if (cpu == NULL)
-        return -1;
     run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
 
     return vmi_ioctl_data.rv;

@@ -4333,7 +4333,7 @@ static int kvm_handle_debug(X86CPU *cpu,
     if (arch_info->exception == EXCP01_DB) {
         if (arch_info->dr6 & DR6_BS) {
             if (cs->singlestep_enabled) {
-                if (cs->vmi_singlestep_enabled) {
+                if (cs->vmi_singlestep_enabled == 1) {
                     struct kvm_vmi_event_debug *event =
                         (struct kvm_vmi_event_debug*) &cs->kvm_run->vmi_event;
 
