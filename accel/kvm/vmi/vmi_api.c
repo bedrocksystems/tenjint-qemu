@@ -186,3 +186,7 @@ uint32_t vmi_api_get_page_bits(void) {
 uint32_t vmi_api_get_page_size(void) {
     return TARGET_PAGE_SIZE;
 }
+
+uint64_t vmi_api_vtop(uint64_t addr, uint64_t dtb) {
+    return vmi_api_arch_vtop(addr, dtb);
+}

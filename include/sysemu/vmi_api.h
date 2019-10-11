@@ -44,4 +44,7 @@ extern int vmi_api_write_phys_mem(uint64_t addr, const void *buf, uint64_t len);
 
 extern uint32_t vmi_api_get_page_bits(void);
 extern uint32_t vmi_api_get_page_size(void);
+
+uint64_t vmi_api_arch_vtop(uint64_t addr, uint64_t dtb);
+extern uint64_t vmi_api_vtop(uint64_t addr, uint64_t dtb);
 #endif
