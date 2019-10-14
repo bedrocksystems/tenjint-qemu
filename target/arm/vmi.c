@@ -19,11 +19,11 @@ uint64_t vmi_api_arch_vtop(uint64_t addr, uint64_t dtb) {
     // trans_cpu.env.cp15.tcr_el[1].base_mask = 
 
     printf("--------------------------------------------------------\n");
-    printf("trans_cpu.env.cp15.ttbr0_el[1] = 0x%llx\n", trans_cpu.env.cp15.ttbr0_el[1]);
-    printf("trans_cpu.env.cp15.ttbr1_el[1] = 0x%llx\n", trans_cpu.env.cp15.ttbr1_el[1]);
-    printf("trans_cpu.env.cp15.tcr_el[1].raw_tcr = 0x%llx\n", trans_cpu.env.cp15.tcr_el[1].raw_tcr);
-    printf("trans_cpu.env.cp15.tcr_el[1].mask = 0x%llx\n", trans_cpu.env.cp15.tcr_el[1].mask);
-    printf("trans_cpu.env.cp15.tcr_el[1].base_mask\n", trans_cpu.env.cp15.tcr_el[1].base_mask);
+    printf("trans_cpu.env.cp15.ttbr0_el[1] = 0x%lx\n", trans_cpu.env.cp15.ttbr0_el[1]);
+    printf("trans_cpu.env.cp15.ttbr1_el[1] = 0x%lx\n", trans_cpu.env.cp15.ttbr1_el[1]);
+    printf("trans_cpu.env.cp15.tcr_el[1].raw_tcr = 0x%lx\n", trans_cpu.env.cp15.tcr_el[1].raw_tcr);
+    printf("trans_cpu.env.cp15.tcr_el[1].mask = 0x%x\n", trans_cpu.env.cp15.tcr_el[1].mask);
+    printf("trans_cpu.env.cp15.tcr_el[1].base_mask = 0x%x\n", trans_cpu.env.cp15.tcr_el[1].base_mask);
     printf("--------------------------------------------------------\n");
 
     rv = cpu_get_phys_page_debug(trans_cs, addr & TARGET_PAGE_MASK);
