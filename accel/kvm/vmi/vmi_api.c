@@ -75,6 +75,8 @@ int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
                                               .type = KVM_VMI_FEATURE_UPDATE,
                                               .rv = 0};
 
+#if defined(TARGET_X86_64) || defined(TARGET_I386)
+//ARM counterpart defined(TARGET_AARCH64) || defined(TARGET_ARM)
     if (feature->feature == KVM_VMI_FEATURE_MTF) {
         // mtf single step should not be enabled once on all cpus
         // this is to remain consistant with the debug single step.
@@ -82,6 +84,7 @@ int vmi_api_feature_update_all(union kvm_vmi_feature *feature) {
         // be called seperately.
         return -EINVAL;
     }
+#endif
     if (feature->feature == KVM_VMI_FEATURE_DEBUG) {
         return vmi_api_debug_feature_update(NULL,
                                         (struct kvm_vmi_feature_debug*)feature);
@@ -111,6 +114,7 @@ int vmi_api_feature_update_single(uint32_t cpu_num,
         return vmi_api_debug_feature_update(cpu,
                                         (struct kvm_vmi_feature_debug*)feature);
     }
+#if defined(TARGET_X86_64) || defined(TARGET_I386)
     else if (feature->feature == KVM_VMI_FEATURE_MTF) {
         struct kvm_vmi_feature_mtf *mtf = (struct kvm_vmi_feature_mtf*)feature;
         if (mtf->enable)
@@ -118,6 +122,7 @@ int vmi_api_feature_update_single(uint32_t cpu_num,
         else
             cpu->vmi_singlestep_enabled = 0;
     }
+#endif
 
     run_on_cpu(cpu, vmi_api_ioctl, RUN_ON_CPU_HOST_PTR(&vmi_ioctl_data));
 
