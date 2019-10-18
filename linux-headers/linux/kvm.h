@@ -398,6 +398,7 @@ struct kvm_run {
 		char padding[256];
 	};
 
+	__u64 exit_time;
 	union kvm_vmi_event vmi_event;
 
 	/* 2048 is the size of the char array used to bound/pad the size
