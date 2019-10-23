@@ -137,7 +137,6 @@ int vmi_wait_event(time_t secs){
 
 #if defined(TARGET_AARCH64) || defined(TARGET_ARM)
     {
-        struct kvm_one_reg r;
         uint64_t timer_val = 0;
 
         CPU_FOREACH(cpu) {
@@ -152,9 +151,7 @@ int vmi_wait_event(time_t secs){
 
         if (timer_val > 0) {
             CPU_FOREACH(cpu) {
-                r.id = KVM_REG_ARM_TIMER_CNT;
-                r.addr = (uintptr_t)&timer_val;
-                kvm_vcpu_ioctl(cpu, KVM_SET_ONE_REG, &r);
+                cpu->kvm_run->vmi_hide_time = timer_val;
             }
         }
     }
