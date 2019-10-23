@@ -399,6 +399,7 @@ struct kvm_run {
 	};
 
 	__u64 exit_time;
+	__u64 vmi_hide_time;
 	union kvm_vmi_event vmi_event;
 
 	/* 2048 is the size of the char array used to bound/pad the size
