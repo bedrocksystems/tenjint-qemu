@@ -7,6 +7,7 @@
 #include "sysemu/kvm.h"
 #include "sysemu/vmi_api.h"
 #include "sysemu/vmi_ioctl.h"
+#include "sysemu/sysemu.h"
 #include "qemu/main-loop.h"
 #include "exec/cpu-common.h"
 
@@ -194,4 +195,8 @@ uint32_t vmi_api_get_page_size(void) {
 
 uint64_t vmi_api_vtop(uint64_t addr, uint64_t dtb) {
     return vmi_api_arch_vtop(addr, dtb);
+}
+
+void vmi_api_request_shutdown(void) {
+    qemu_system_shutdown_request(SHUTDOWN_CAUSE_HOST_SIGNAL);
 }

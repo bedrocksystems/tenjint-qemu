@@ -24,6 +24,7 @@ extern int vmi_api_init(void);
 extern void vmi_api_uninit(void);
 
 extern void vmi_api_request_stop(void);
+extern void vmi_api_request_shutdown(void);
 
 extern struct vmi_event* vmi_api_get_event(void);
 extern int vmi_api_wait_event(time_t secs);
