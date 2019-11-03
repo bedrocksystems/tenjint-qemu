@@ -30,6 +30,7 @@ uint64_t vmi_api_arch_vtop(uint64_t addr, uint64_t dtb) {
     trans_cpu.env.cp15.tcr_el[1].base_mask = 0;
 
     rv = cpu_get_phys_page_debug(trans_cs, addr & TARGET_PAGE_MASK);
-    rv += addr & ~TARGET_PAGE_MASK;
+    if (rv != (uint64_t)-1)
+        rv += addr & ~TARGET_PAGE_MASK;
     return rv;
 }
