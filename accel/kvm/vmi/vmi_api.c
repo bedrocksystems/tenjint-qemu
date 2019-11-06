@@ -32,8 +32,16 @@ struct vmi_event* vmi_api_get_event(void) {
     return vmi_get_event();
 }
 
+int vmi_api_start_vm(void) {
+    return vmi_start_vm();
+}
+
 int vmi_api_wait_event(time_t secs) {
     return vmi_wait_event(secs);
+}
+
+void vmi_api_stop_vm(void) {
+    vmi_stop_vm();
 }
 
 static int vmi_api_debug_feature_update(CPUState *cpu,

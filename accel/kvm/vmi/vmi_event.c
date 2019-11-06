@@ -118,8 +118,7 @@ struct vmi_event* vmi_get_event(void){
     return rv;
 }
 
-int vmi_wait_event(time_t secs){
-    int r;
+int vmi_start_vm(void) {
     struct vmi_event_entry *i = NULL;
     struct vmi_event_entry *tmp = NULL;
     CPUState *cpu = NULL;
@@ -132,7 +131,8 @@ int vmi_wait_event(time_t secs){
     QSIMPLEQ_INIT(vmi_free_queue);
 
     if (!QSIMPLEQ_EMPTY(vmi_event_queue)) {
-        goto out;
+        vmi_stop_vm();
+        return 0;
     }
 
 #if defined(TARGET_AARCH64) || defined(TARGET_ARM)
@@ -140,10 +140,6 @@ int vmi_wait_event(time_t secs){
         uint64_t timer_val = 0;
 
         CPU_FOREACH(cpu) {
-            if (!cpu->stopped) {
-                timer_val = 0;
-                break;
-            }
             if (cpu->kvm_run->exit_time > timer_val) {
                 timer_val = cpu->kvm_run->exit_time;
             }
@@ -180,19 +176,24 @@ int vmi_wait_event(time_t secs){
         }
     }
 
+    return 1;
+}
+
+int vmi_wait_event(time_t secs){
+    int r = 0;
     while(QSIMPLEQ_EMPTY(vmi_event_queue)) {
         r = qemu_mutex_timedwait_iothread(&vmi_event_cv, secs);
         if (r)
-            return r;
+            break;
     }
+    return r;
+}
 
-out:
+void vmi_stop_vm(void) {
     cpu_disable_ticks();
     pause_all_vcpus();
 
     kvm_disable_phys_breakpoints();
-
-    return 0;
 }
 
 void vmi_wait_init(void){
