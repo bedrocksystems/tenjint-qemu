@@ -21,13 +21,13 @@ uint64_t vmi_api_arch_vtop(uint64_t addr, uint64_t dtb) {
     // printf("trans_cpu.env.cp15.tcr_el[1].base_mask = 0x%x\n", trans_cpu.env.cp15.tcr_el[1].base_mask);
     // printf("--------------------------------------------------------\n");
 
-    tcr = trans_cpu.env.cp15.tcr_el[1].raw_tcr;
+//    tcr = trans_cpu.env.cp15.tcr_el[1].raw_tcr;
 
     trans_cpu.env.cp15.ttbr0_el[1] = dtb;
-    trans_cpu.env.cp15.ttbr1_el[1] = 0;
-    trans_cpu.env.cp15.tcr_el[1].raw_tcr = tcr & 0xffffffffffffffc0;
-    trans_cpu.env.cp15.tcr_el[1].mask = 0;
-    trans_cpu.env.cp15.tcr_el[1].base_mask = 0;
+    trans_cpu.env.cp15.ttbr1_el[1] = dtb;
+//    trans_cpu.env.cp15.tcr_el[1].raw_tcr = tcr & 0xffffffffffffffc0;
+//    trans_cpu.env.cp15.tcr_el[1].mask = 0;
+//    trans_cpu.env.cp15.tcr_el[1].base_mask = 0;
 
     rv = cpu_get_phys_page_debug(trans_cs, addr & TARGET_PAGE_MASK);
     if (rv != (uint64_t)-1)
