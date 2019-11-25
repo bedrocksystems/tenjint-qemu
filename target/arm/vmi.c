@@ -9,7 +9,7 @@ uint64_t vmi_api_arch_vtop(uint64_t addr, uint64_t dtb) {
     CPUState *trans_cs = CPU(&trans_cpu);
     CPUState *cs = qemu_get_cpu(0);
     ARMCPU *cpu = ARM_CPU(cs);
-    uint64_t rv, tcr;
+    uint64_t rv;//, tcr;
 
     memcpy(&trans_cpu, cpu, sizeof(ARMCPU));
 
