@@ -2,6 +2,9 @@
  * qsp.c - QEMU Synchronization Profiler
  *
  * Copyright (C) 2018, Emilio G. Cota <cota@braap.org>
+ * Modifications made by BedRock Systems, Inc. on
+ * Aug 26 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * License: GNU GPL, version 2 or later.
  *   See the COPYING file in the top-level directory.

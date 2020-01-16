@@ -2,6 +2,9 @@
  * QEMU CPU model
  *
  * Copyright (c) 2012 SUSE LINUX Products GmbH
+ * Modifications made by BedRock Systems, Inc. on
+ * Oct 10 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

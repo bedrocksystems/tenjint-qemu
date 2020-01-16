@@ -2,6 +2,9 @@
  *  Virtual page mapping
  *
  *  Copyright (c) 2003 Fabrice Bellard
+ *  Modifications made by BedRock Systems, Inc. on
+ *  Dec 05 2019,
+ *  which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

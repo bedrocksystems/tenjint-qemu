@@ -1,3 +1,8 @@
+/*
+ * Modifications made by BedRock Systems, Inc. on
+ * Jul 11 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
+ */
 #ifndef QEMU_CPUS_H
 #define QEMU_CPUS_H
 

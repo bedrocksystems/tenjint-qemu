@@ -1,6 +1,9 @@
 /* QEMU accelerator interfaces
  *
  * Copyright (c) 2014 Red Hat Inc
+ * Modifications made by BedRock Systems, Inc. on
+ * Jul 10 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

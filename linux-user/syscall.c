@@ -2,6 +2,9 @@
  *  Linux syscalls
  *
  *  Copyright (c) 2003 Fabrice Bellard
+ *  Modifications made by BedRock Systems, Inc. on
+ *  Jul 22 2019,
+ *  which modifications are (c) 2020 BedRock Systems, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

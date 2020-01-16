@@ -2,6 +2,9 @@
  * QEMU KVM support -- ARM specific functions.
  *
  * Copyright (c) 2012 Linaro Limited
+ * Modifications made by BedRock Systems, Inc. on
+ * Oct 09 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * This work is licensed under the terms of the GNU GPL, version 2 or later.
  * See the COPYING file in the top-level directory.

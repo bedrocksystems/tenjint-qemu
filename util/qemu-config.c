@@ -1,3 +1,9 @@
+/*
+ * Modifications made by BedRock Systems, Inc. on
+ * Jul 10 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
+ */
+
 #include "qemu/osdep.h"
 #include "block/qdict.h" /* for qdict_extract_subqdict() */
 #include "qapi/error.h"
