@@ -2,6 +2,9 @@
  * QEMU System Emulator
  *
  * Copyright (c) 2003-2008 Fabrice Bellard
+ * Modifications made by BedRock Systems, Inc. on
+ * Jul 10 2019, Oct 08 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

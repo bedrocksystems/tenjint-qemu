@@ -2,6 +2,9 @@
  * Wrappers around mutex/cond/thread functions
  *
  * Copyright Red Hat, Inc. 2009
+ * Modifications made by BedRock Systems, Inc. on
+ * Aug 26 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Author:
  *  Marcelo Tosatti <mtosatti@redhat.com>

@@ -2,6 +2,9 @@
  * QEMU Machine
  *
  * Copyright (C) 2014 Red Hat Inc
+ * Modifications made by BedRock Systems, Inc. on
+ * Jul 10 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Authors:
  *   Marcel Apfelbaum <marcel.a@redhat.com>

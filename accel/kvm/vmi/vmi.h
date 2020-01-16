@@ -1,3 +1,17 @@
+/*
+ * QEMU KVM VMI support
+ *
+ * Copyright BedRock Systems, Inc. 2020
+ *
+ * Authors:
+ *  Jonas Pfoh     <jonas@bedrocksystems.com>
+ *  Sebastian Vogl <sebastian@bedrocksystems.com>
+ *
+ * This work is licensed under the terms of the GNU GPL, version 2 or later.
+ * See the COPYING file in the top-level directory.
+ *
+ */
+
 #ifndef VMI_H
 #define VMI_H
 

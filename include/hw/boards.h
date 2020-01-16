@@ -1,4 +1,9 @@
-/* Declarations for use by board files for creating devices.  */
+/* Declarations for use by board files for creating devices.
+ *
+ * Modifications made by BedRock Systems, Inc. on
+ * Jul 10 2019, Oct 08 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
+ */
 
 #ifndef HW_BOARDS_H
 #define HW_BOARDS_H

@@ -1,11 +1,17 @@
 /*
  * KVM VMI support
  *
- * Copyright (C) 2019 Bedrock Systems, Inc. All Rights Reserved.
+ * Copyright (C) 2020 Bedrock Systems, Inc.
  *
  * Authors:
  *  Jonas Pfoh      <jonas@bedrocksystems.com>
  *  Sebastian Vogl  <sebastian@bedrocksystems.com>
+ *
+ * Derived from arch/x86/include/uapi/asm/kvm_vmi.h:
+ * Copyright (C) 2017 FireEye, Inc. All Rights Reserved.
+ * Authors:
+ *  Jonas Pfoh      <jonas.pfoh@fireeye.com>
+ *  Sebastian Vogl  <sebastian.vogl@fireeye.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

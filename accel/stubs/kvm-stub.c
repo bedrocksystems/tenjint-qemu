@@ -2,6 +2,9 @@
  * QEMU KVM stub
  *
  * Copyright Red Hat, Inc. 2010
+ * Modifications made by BedRock Systems, Inc. on
+ * Oct 09 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Author: Paolo Bonzini     <pbonzini@redhat.com>
  *

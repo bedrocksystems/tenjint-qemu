@@ -3,6 +3,9 @@
  *
  * Copyright Mian-M. Hamayun 2013, Virtual Open Systems
  * Copyright Alex Bennée 2014, Linaro
+ * Modifications made by BedRock Systems, Inc. on
+ * Oct 09 2019, Oct 10 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * This work is licensed under the terms of the GNU GPL, version 2 or later.
  * See the COPYING file in the top-level directory.

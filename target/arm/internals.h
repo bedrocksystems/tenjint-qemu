@@ -2,6 +2,9 @@
  * QEMU ARM CPU -- internal functions and types
  *
  * Copyright (c) 2014 Linaro Ltd
+ * Modifications made by BedRock Systems, Inc. on
+ * Aug 19 2019,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

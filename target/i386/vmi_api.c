@@ -1,3 +1,16 @@
+/*
+ * QEMU KVM VMI I386 API
+ *
+ * Copyright BedRock Systems, Inc. 2020
+ *
+ * Authors:
+ *  Jonas Pfoh     <jonas@bedrocksystems.com>
+ *  Sebastian Vogl <sebastian@bedrocksystems.com>
+ *
+ * This work is licensed under the terms of the GNU GPL, version 2 or later.
+ * See the COPYING file in the top-level directory.
+ *
+ */
 #include "vmi_api.h"
 
 #include "sysemu/kvm.h"
