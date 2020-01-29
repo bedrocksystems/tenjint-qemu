@@ -24,6 +24,7 @@
 #include "sysemu/sysemu.h"
 #include "qemu/main-loop.h"
 #include "exec/cpu-common.h"
+#include "ui/console.h"
 
 #include "vmi.h"
 
@@ -221,4 +222,8 @@ uint64_t vmi_api_vtop(uint64_t addr, uint64_t dtb) {
 
 void vmi_api_request_shutdown(void) {
     qemu_system_shutdown_request(SHUTDOWN_CAUSE_HOST_SIGNAL);
+}
+
+void vmi_api_mouse_out(void) {
+    dpy_mouse_out();
 }

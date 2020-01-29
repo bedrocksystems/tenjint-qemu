@@ -63,4 +63,6 @@ extern uint32_t vmi_api_get_page_size(void);
 
 uint64_t vmi_api_arch_vtop(uint64_t addr, uint64_t dtb);
 extern uint64_t vmi_api_vtop(uint64_t addr, uint64_t dtb);
+
+extern void vmi_api_mouse_out(void);
 #endif

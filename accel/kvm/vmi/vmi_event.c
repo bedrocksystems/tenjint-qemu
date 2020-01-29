@@ -22,7 +22,6 @@
 #include "sysemu/vmi_api.h"
 #include "sysemu/sysemu.h"
 #include "sysemu/kvm.h"
-#include "ui/console.h"
 
 #include "vmi.h"
 
@@ -209,7 +208,6 @@ void vmi_stop_vm(void) {
     pause_all_vcpus();
 
     kvm_disable_phys_breakpoints();
-    dpy_mouse_out();
 }
 
 void vmi_wait_init(void){
