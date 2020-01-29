@@ -31,6 +31,12 @@
 static bool _vmi_initialized = false;
 static QemuThread *python_thread = NULL;
 
+bool is_vmi_thread(void) {
+    if (python_thread == NULL)
+        return false;
+    return qemu_thread_is_self(python_thread);
+}
+
 static void* vmi_python_thread_func(void *arg){
     char *vmi_configs = (char*) arg;
     char py_string[PY_STRING_SZ] = {0};

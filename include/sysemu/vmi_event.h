@@ -20,5 +20,6 @@
 
 void vmi_put_kvm_event(union kvm_vmi_event *event);
 void vmi_put_event(struct vmi_event *event);
+bool vmi_has_control(void);
 
 #endif
