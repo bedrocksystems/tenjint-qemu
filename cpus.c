@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2003-2008 Fabrice Bellard
  * Modifications made by BedRock Systems, Inc. on
- * Jul 11 2019, Aug 19 2019, Aug 26 2019,
+ * Jul 11 2019, Aug 19 2019, Aug 26 2019, Jan 29 2020,
  * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
