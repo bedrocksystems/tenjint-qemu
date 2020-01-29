@@ -15,5 +15,6 @@
 #define SYSEMU_VMI_H
 
 bool vmi_initialized(void);
+bool is_vmi_thread(void);
 
 #endif // SYSEMU_VMI_H

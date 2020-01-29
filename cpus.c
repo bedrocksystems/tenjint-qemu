@@ -63,6 +63,9 @@
 #include "hw/boards.h"
 #include "hw/hw.h"
 #include "sysemu/vmi_event.h"
+#include "sysemu/vmi.h"
+
+#include <Python.h>
 
 #ifdef CONFIG_LINUX
 
@@ -1888,9 +1891,16 @@ bool qemu_in_vcpu_thread(void)
 }
 
 static __thread bool iothread_locked = false;
+static bool vmi_iothread_locked = false;
+
+static bool vmi_thread_pool(void) {
+    return is_vmi_thread() || (vmi_has_control() && PyGILState_Check());
+}
 
 bool qemu_mutex_iothread_locked(void)
 {
+    if (vmi_thread_pool())
+        return vmi_iothread_locked;
     return iothread_locked;
 }
 
@@ -1904,28 +1914,52 @@ void qemu_mutex_lock_iothread_impl(const char *file, int line)
 
     g_assert(!qemu_mutex_iothread_locked());
     bql_lock(&qemu_global_mutex, file, line);
-    iothread_locked = true;
+    if (vmi_thread_pool())
+        vmi_iothread_locked = true;
+    else
+        iothread_locked = true;
 }
 
 void qemu_mutex_unlock_iothread(void)
 {
     g_assert(qemu_mutex_iothread_locked());
-    iothread_locked = false;
+    if (vmi_thread_pool())
+        vmi_iothread_locked = false;
+    else
+        iothread_locked = false;
     qemu_mutex_unlock(&qemu_global_mutex);
 }
 
 void qemu_mutex_wait_iothread(QemuCond *cond)
 {
+    if (vmi_thread_pool())
+        vmi_iothread_locked = false;
+    else
+        iothread_locked = false;
     qemu_cond_wait(cond, &qemu_global_mutex);
+    if (vmi_thread_pool())
+        vmi_iothread_locked = true;
+    else
+        iothread_locked = true;
 }
 
 int qemu_mutex_timedwait_iothread(QemuCond *cond, time_t secs)
 {
+    int rv;
     if (secs == 0){
         qemu_mutex_wait_iothread(cond);
         return 0;
     }
-    return qemu_cond_timedwait(cond, &qemu_global_mutex, secs*1000);
+    if (vmi_thread_pool())
+        vmi_iothread_locked = false;
+    else
+        iothread_locked = false;
+    rv = qemu_cond_timedwait(cond, &qemu_global_mutex, secs*1000);
+    if (vmi_thread_pool())
+        vmi_iothread_locked = true;
+    else
+        iothread_locked = true;
+    return rv;
 }
 
 static bool all_vcpus_paused(void)

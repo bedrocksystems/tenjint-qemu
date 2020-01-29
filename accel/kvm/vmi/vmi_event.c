@@ -35,7 +35,9 @@ QSIMPLEQ_HEAD(vmi_event_queue_t, vmi_event_entry);
 static struct vmi_event_queue_t *vmi_event_queue = NULL;
 static struct vmi_event_queue_t *vmi_free_queue = NULL;
 
-static QemuCond vmi_event_cv;
+static QemuCond vmi_event_cv = {0};
+
+static bool vmi_control = false;
 
 int vmi_event_init(MachineState *ms){
     vmi_event_queue = g_malloc0(sizeof(struct vmi_event_queue_t));
@@ -45,6 +47,8 @@ int vmi_event_init(MachineState *ms){
     QSIMPLEQ_INIT(vmi_free_queue);
 
     qemu_cond_init(&vmi_event_cv);
+
+    vmi_control = false;
 
     return 0;
 }
@@ -190,6 +194,7 @@ int vmi_start_vm(void) {
         }
     }
 
+    vmi_control = false;
     return 1;
 }
 
@@ -204,6 +209,8 @@ int vmi_wait_event(time_t secs){
 }
 
 void vmi_stop_vm(void) {
+    vmi_control = true;
+
     cpu_disable_ticks();
     pause_all_vcpus();
 
@@ -216,3 +223,6 @@ void vmi_wait_init(void){
     }
 }
 
+bool vmi_has_control(void) {
+    return vmi_control;
+}
