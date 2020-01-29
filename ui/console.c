@@ -1678,6 +1678,25 @@ void dpy_text_resize(QemuConsole *con, int w, int h)
     }
 }
 
+static void _dpy_mouse_out(QemuConsole *con) {
+    DisplayState *s = con->ds;
+    DisplayChangeListener *dcl;
+    QLIST_FOREACH(dcl, &s->listeners, next) {
+        if (dcl->ops->dpy_mouse_out) {
+            dcl->ops->dpy_mouse_out(dcl);
+        }
+    }
+}
+
+void dpy_mouse_out(void)
+{
+    QemuConsole *con;
+
+    QTAILQ_FOREACH(con, &consoles, next) {
+        _dpy_mouse_out(con);
+    }
+}
+
 void dpy_mouse_set(QemuConsole *con, int x, int y, int on)
 {
     DisplayState *s = con->ds;

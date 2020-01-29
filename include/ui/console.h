@@ -232,6 +232,7 @@ typedef struct DisplayChangeListenerOps {
                                   QemuDmaBuf *dmabuf);
     void (*dpy_gl_update)(DisplayChangeListener *dcl,
                           uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+    void (*dpy_mouse_out)(DisplayChangeListener *dcl);
 
 } DisplayChangeListenerOps;
 
@@ -287,6 +288,7 @@ void dpy_text_cursor(QemuConsole *con, int x, int y);
 void dpy_text_update(QemuConsole *con, int x, int y, int w, int h);
 void dpy_text_resize(QemuConsole *con, int w, int h);
 void dpy_mouse_set(QemuConsole *con, int x, int y, int on);
+void dpy_mouse_out(void);
 void dpy_cursor_define(QemuConsole *con, QEMUCursor *cursor);
 bool dpy_cursor_define_supported(QemuConsole *con);
 bool dpy_gfx_check_format(QemuConsole *con,

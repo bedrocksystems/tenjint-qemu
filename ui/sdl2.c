@@ -646,6 +646,12 @@ void sdl2_poll_events(struct sdl2_console *scon)
     }
 }
 
+static void sdl_mouse_out(DisplayChangeListener *dcl)
+{
+    struct sdl2_console *scon = container_of(dcl, struct sdl2_console, dcl);
+    sdl_grab_end(scon);
+}
+
 static void sdl_mouse_warp(DisplayChangeListener *dcl,
                            int x, int y, int on)
 {
@@ -720,6 +726,7 @@ static const DisplayChangeListenerOps dcl_2d_ops = {
     .dpy_refresh          = sdl2_2d_refresh,
     .dpy_mouse_set        = sdl_mouse_warp,
     .dpy_cursor_define    = sdl_mouse_define,
+    .dpy_mouse_out        = sdl_mouse_out,
 };
 
 #ifdef CONFIG_OPENGL
@@ -731,6 +738,7 @@ static const DisplayChangeListenerOps dcl_gl_ops = {
     .dpy_refresh             = sdl2_gl_refresh,
     .dpy_mouse_set           = sdl_mouse_warp,
     .dpy_cursor_define       = sdl_mouse_define,
+    .dpy_mouse_out           = sdl_mouse_out,
 
     .dpy_gl_ctx_create       = sdl2_gl_create_context,
     .dpy_gl_ctx_destroy      = sdl2_gl_destroy_context,
