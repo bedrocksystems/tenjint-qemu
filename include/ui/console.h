@@ -1,5 +1,10 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
+/*
+ * Modifications made by BedRock Systems, Inc. on
+ * Jan 29 2020,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
+ */
 
 #include "ui/qemu-pixman.h"
 #include "qom/object.h"

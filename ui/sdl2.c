@@ -2,6 +2,9 @@
  * QEMU SDL display driver
  *
  * Copyright (c) 2003 Fabrice Bellard
+ * Modifications made by BedRock Systems, Inc. on
+ * Jan 29 2020,
+ * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
