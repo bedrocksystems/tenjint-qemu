@@ -3,7 +3,7 @@
  *
  * Copyright Red Hat, Inc. 2010
  * Modifications made by BedRock Systems, Inc. on
- * Oct 09 2019,
+ * Oct 09 2019, Jan 30 2020,
  * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Author: Paolo Bonzini     <pbonzini@redhat.com>
@@ -17,6 +17,7 @@
 #include "qemu-common.h"
 #include "cpu.h"
 #include "sysemu/kvm.h"
+#include "sysemu/vmi_event.h"
 #include "sysemu/vmi.h"
 
 #ifndef CONFIG_USER_ONLY
@@ -39,6 +40,17 @@ bool kvm_msi_use_devid;
 
 bool vmi_initialized(void) {
     return false;
+}
+
+bool is_vmi_thread(void) {
+    return false;
+}
+
+bool vmi_has_control(void) {
+    return false;
+}
+
+void vmi_put_kvm_event(union kvm_vmi_event *event) {
 }
 
 int kvm_destroy_vcpu(CPUState *cpu)
