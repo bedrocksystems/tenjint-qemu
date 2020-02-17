@@ -5,6 +5,7 @@
  * Copyright IBM, Corp. 2008
  * Modifications made by BedRock Systems, Inc. on
  * Oct 08 2019, Oct 09 2019, Oct 10 2019, Oct 11 2019,
+ * Feb 17 2020
  * which modifications are (c) 2020 BedRock Systems, Inc.
  *
  * Authors:
@@ -4333,6 +4334,7 @@ static int kvm_handle_debug(X86CPU *cpu,
     int n;
     hwaddr phys_addr;
 
+    cpu_synchronize_state(cs);
     if (arch_info->exception == EXCP01_DB) {
         if (arch_info->dr6 & DR6_BS) {
             if (cs->singlestep_enabled) {
