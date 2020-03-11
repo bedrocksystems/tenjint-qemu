@@ -17,7 +17,7 @@
 #include "qemu/osdep.h"
 
 #include "sysemu/cpus.h"
-#include "qom/cpu.h"
+#include "hw/core/cpu.h"
 
 struct vmi_ioctl_data_t {
     void *data;

@@ -22,6 +22,7 @@
 #include "sysemu/vmi_api.h"
 #include "sysemu/sysemu.h"
 #include "sysemu/kvm.h"
+#include "sysemu/runstate.h"
 
 #include "vmi.h"
 

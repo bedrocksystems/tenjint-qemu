@@ -17,11 +17,11 @@
 #include <linux/kvm_vmi.h>
 
 #include "sysemu/cpus.h"
-#include "qom/cpu.h"
 #include "sysemu/kvm.h"
 #include "sysemu/vmi_api.h"
 #include "sysemu/vmi_ioctl.h"
 #include "sysemu/sysemu.h"
+#include "sysemu/runstate.h"
 #include "qemu/main-loop.h"
 #include "exec/cpu-common.h"
 #include "ui/console.h"
