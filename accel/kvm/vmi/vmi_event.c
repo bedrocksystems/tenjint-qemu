@@ -203,7 +203,7 @@ int vmi_wait_event(time_t secs){
     int r = 0;
     while(QSIMPLEQ_EMPTY(vmi_event_queue)) {
         r = qemu_mutex_timedwait_iothread(&vmi_event_cv, secs);
-        if (r)
+        if (!r)
             break;
     }
     return r;
